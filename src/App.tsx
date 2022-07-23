@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import moment from 'moment';
 import ProductsPage from 'pages/products';
 import SignUpPage from 'pages/signup';
 import SignInPage from 'pages/signin';
@@ -24,7 +25,8 @@ const App = () => {
   const [, i18n] = useTranslation();
   useEffect(() => {
     i18n.changeLanguage(language);
-  }, [language]);
+    moment.locale(language);
+  }, [language, i18n]);
   return (
     <Routes>
       <Route

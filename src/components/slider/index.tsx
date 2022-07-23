@@ -48,7 +48,8 @@ const Slider = ({
     return () => {
       slider.destroy();
     };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
   return (
     <Card {...otherProps}>
       <Card.Header as="h4">{children}</Card.Header>

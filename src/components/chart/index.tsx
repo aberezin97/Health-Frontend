@@ -30,7 +30,8 @@ const Chart = ({
     return () => {
       chart?.destroy();
     };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
   useEffect(() => {
     if (chart !== null) {
       let isEqual = true;
@@ -56,6 +57,7 @@ const Chart = ({
         );
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
   return <div id={id}></div>;
 };

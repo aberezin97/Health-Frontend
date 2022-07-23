@@ -25,9 +25,14 @@ const ProgressWidget = ({
           value > limit && limit > 0 ? 'text-danger' : ''
         }`}
       >
-        {value}
+        {value.toFixed(1)}
       </div>
-      <ProgressBar now={value} max={max || limit} variant={color} />
+      <ProgressBar
+        now={value}
+        max={max || limit || value - 1}
+        min={0}
+        variant={color}
+      />
     </Card.Body>
   </Card>
 );

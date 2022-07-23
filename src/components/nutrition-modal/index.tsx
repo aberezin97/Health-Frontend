@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
   Modal, Form, Row, Col
 } from 'react-bootstrap';
@@ -53,10 +53,22 @@ const NutritionModal = ({
   const [t] = useTranslation('nutrition');
   const dispatch = useAppDispatch();
   const { entries } = useAppSelector((state) => state.nutrition);
-  const [options, setOptions] = useState<IProduct[]>([]);
-  const [isUserProductsLoading, setIsUserProductsLoading] = useState(false);
-  const formik = useFormik({
-    initialValues:
+  const [entry, setEntry] = useState(
+    show.entry !== null
+      ? show.entry
+      : {
+        id: 0,
+        name: '',
+        calories: 0,
+        proteins: 0,
+        fats: 0,
+        carbohydrates: 0,
+        weight: 1,
+        time: moment().format('HH:mm')
+      }
+  );
+  useEffect(() => {
+    setEntry(
       show.entry !== null
         ? show.entry
         : {
@@ -68,7 +80,13 @@ const NutritionModal = ({
           carbohydrates: 0,
           weight: 1,
           time: moment().format('HH:mm')
-        },
+        }
+    );
+  }, [show]);
+  const [options, setOptions] = useState<IProduct[]>([]);
+  const [isUserProductsLoading, setIsUserProductsLoading] = useState(false);
+  const formik = useFormik({
+    initialValues: entry,
     validationSchema: Yup.object({
       name: fieldRequiredValidator,
       weight: fieldRequiredValidator,
@@ -119,7 +137,7 @@ const NutritionModal = ({
               name="name"
               labelKey="name"
               as={Col}
-              sm={10}
+              sm={9}
               options={options}
               onChange={formik.handleChange}
               onSelect={(selected) => {
@@ -143,8 +161,8 @@ const NutritionModal = ({
                         ...product,
                         type: ProductType.USER
                       })),
-                      ...entries.map((entry) => ({
-                        ...(entry as IUserProduct),
+                      ...entries.map((product) => ({
+                        ...(product as IUserProduct),
                         type: ProductType.RECENT
                       }))
                     ]);
@@ -157,9 +175,18 @@ const NutritionModal = ({
               isInvalid={!!(formik.errors.name && formik.touched.name)}
               promptText={t('type_to_search')}
               renderMenu={(results, menuProps, state) => {
+                const {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  newSelectionPrefix,
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  paginationText,
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  renderMenuItemChildren,
+                  ...props
+                } = menuProps;
                 if (results.length === 0) {
                   return (
-                    <Menu {...menuProps}>
+                    <Menu {...props}>
                       <MenuItem option={{}} position={0} disabled>
                         {menuProps.emptyLabel}
                       </MenuItem>
@@ -198,15 +225,19 @@ const NutritionModal = ({
                           </div>
                           <div>
                             <span className="info-product me-1">
+                              <span style={{ backgroundColor: '#f59f00' }} />
                               {t('cals')}: {(i as IProduct).calories}
                             </span>
                             <span className="info-product me-1">
+                              <span style={{ backgroundColor: '#206bc4' }} />
                               {t('proteins')}: {(i as IProduct).proteins}
                             </span>
                             <span className="info-product me-1">
+                              <span style={{ backgroundColor: '#d63939' }} />
                               {t('fats')}: {(i as IProduct).fats}
                             </span>
                             <span className="info-product">
+                              <span style={{ backgroundColor: '#2fb344' }}/>
                               {t('carbs')}: {(i as IProduct).carbohydrates}
                             </span>
                           </div>
@@ -218,7 +249,7 @@ const NutritionModal = ({
                     })}
                   </Fragment>
                 ));
-                return <Menu {...menuProps}>{items}</Menu>;
+                return <Menu {...props}>{items}</Menu>;
               }}
             >
               {t('name')}
@@ -227,7 +258,7 @@ const NutritionModal = ({
               type="number"
               name="weight"
               as={Col}
-              sm={2}
+              sm={3}
               max={9999}
               min={1}
               step={1}

@@ -12,7 +12,7 @@ const ActivatePage = () => {
     if (uidb64 !== undefined && token !== undefined) {
       dispatch(activateUser({ uidb64, token }));
     }
-  }, []);
+  }, [dispatch, token, uidb64]);
   return <PageCenter></PageCenter>;
 };
 

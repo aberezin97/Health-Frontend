@@ -12,42 +12,54 @@ import { IWeightEntry } from 'store/slices/weightSlice';
 import { addWeight, modifyWeight, delWeight } from 'controllers/weight';
 import './index.css';
 
-export interface IWeightModalProps {
+export interface IWeightModalShow {
+  status: boolean;
   entry: IWeightEntry | null;
-  onHide: () => void;
+}
+
+export interface IWeightModalProps {
+  show: IWeightModalShow;
+  onHide: React.Dispatch<React.SetStateAction<IWeightModalShow>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
 }
 
-const WeightModal = ({ entry, onHide, ...otherProps }: IWeightModalProps) => {
+const WeightModal = ({ show, onHide, ...otherProps }: IWeightModalProps) => {
   const [t] = useTranslation('weight');
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.weight);
   const formik = useFormik({
     initialValues:
-      entry !== null
-        ? entry
+      show.entry !== null
+        ? show.entry
         : {
           date: moment().format('yyyy-MM-DD'),
           weight: 1
         },
     onSubmit: (args) => {
-      if (entry === null) {
+      if (show.entry === null) {
         dispatch(addWeight(args))
           .unwrap()
-          .then(() => onHide());
+          .then(() => onHide({ status: false, entry: show.entry }));
       } else {
-        dispatch(modifyWeight({ id: entry.id, ...args }))
+        dispatch(modifyWeight({ id: show.entry.id, ...args }))
           .unwrap()
-          .then(() => onHide());
+          .then(() => onHide({ status: false, entry: show.entry }));
       }
-    }
+    },
+    enableReinitialize: true
   });
   return (
-    <Modal centered size="sm" onHide={onHide} {...otherProps}>
+    <Modal
+      centered
+      size="sm"
+      show={show.status}
+      onHide={() => onHide({ status: false, entry: show.entry })}
+      {...otherProps}
+    >
       <Modal.Header closeButton>
         <Modal.Title>
-          {entry === null ? t('add_entry') : t('modify_entry')}
+          {show.entry === null ? t('add_entry') : t('modify_entry')}
         </Modal.Title>
       </Modal.Header>
       <Form onSubmit={formik.handleSubmit}>
@@ -82,7 +94,7 @@ const WeightModal = ({ entry, onHide, ...otherProps }: IWeightModalProps) => {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          {entry === null ? (
+          {show.entry === null ? (
             <Button variant="success" type="submit" isLoading={loading}>
               {t('add_entry')}
             </Button>
@@ -92,9 +104,11 @@ const WeightModal = ({ entry, onHide, ...otherProps }: IWeightModalProps) => {
                 variant="danger"
                 type="button"
                 onClick={() => {
-                  dispatch(delWeight(entry.id))
-                    .unwrap()
-                    .then(() => onHide());
+                  if (show.entry !== null) {
+                    dispatch(delWeight(show.entry.id))
+                      .unwrap()
+                      .then(() => onHide());
+                  }
                 }}
                 isLoading={loading}
               >

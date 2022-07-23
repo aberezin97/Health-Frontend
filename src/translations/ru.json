@@ -74,5 +74,8 @@
     "pfc_ratio_for_last_month": "Соотношение БЖУ за последний месяц",
     "intake_calories_for_last_month": "Потребление калорий за последний месяц",
     "intake_pfc_for_last_month": "Потребление БЖУ за последний месяц"
+  },
+  "validators": {
+    "required_field": "Обязательное поле"
   }
 }

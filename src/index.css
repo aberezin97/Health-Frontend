@@ -14,12 +14,22 @@ input::-webkit-inner-spin-button {
   padding: 2px;
   font-size: 11px;
   line-height: 1.6;
-  font-weight: 700;
+  font-weight: 400;
   color: #fff;
   border-radius: 2px;
   background: #212529;
   white-space: nowrap;
   opacity: 0.9;
+}
+
+.info-product > span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 2px;
+  margin-right: 4px;
+  border-radius: 50%;
+  vertical-align: baseline;
 }
 
 .noUi-tooltip {

@@ -128,10 +128,7 @@ module.exports = {
         }
       ]
     }),
-    new webpack.IgnorePlugin({
-      resourceRegExp: /^\.\/locale$/,
-      contextRegExp: /moment$/
-    })
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /ru/)
   ],
   optimization: {
     minimize: process.env.NODE_ENV === 'production',

@@ -36,7 +36,7 @@ const NutritionPage = () => {
   } = useAppSelector((state) => state.nutrition);
   useEffect(() => {
     dispatch(getNutritionData(date));
-  }, [date]);
+  }, [dispatch, date]);
   return (
     <Page
       pretitle={
@@ -45,7 +45,6 @@ const NutritionPage = () => {
           moment(`${date.year}-${date.month}-${date.day}`).format('MMM Do YYYY')
           ? t('today')
           : moment(`${date.year}-${date.month}-${date.day}`)
-            .locale('ru')
             .format('MMM Do YYYY')
       }
       title={t('nutrition')}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import './index.css';
 
 export interface IInputProps {
@@ -35,27 +36,29 @@ const Input = ({
   errorMessage,
   showErrorMessage = false,
   ...otherProps
-}: IInputProps) => (
-  <Form.Group {...otherProps}>
-    <Form.Label>{children}</Form.Label>
-    <Form.Control
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      onBlur={onBlur}
-      isInvalid={isInvalid}
-      isValid={isValid}
-      step={step}
-      max={max}
-      min={min}
-    />
-    {showErrorMessage && isInvalid ? (
-      <Form.Control.Feedback type="invalid">
-        {errorMessage}
-      </Form.Control.Feedback>
-    ) : null}
-  </Form.Group>
-);
+}: IInputProps) => {
+  const [t] = useTranslation('validators'); return (
+    <Form.Group {...otherProps}>
+      <Form.Label>{children}</Form.Label>
+      <Form.Control
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        isInvalid={isInvalid}
+        isValid={isValid}
+        step={step}
+        max={max}
+        min={min}
+      />
+      {showErrorMessage && isInvalid && errorMessage ? (
+        <Form.Control.Feedback type="invalid">
+          {t(errorMessage)}
+        </Form.Control.Feedback>
+      ) : null}
+    </Form.Group>
+  );
+};
 
 export default Input;

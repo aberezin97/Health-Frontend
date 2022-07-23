@@ -74,5 +74,8 @@
     "intake_pfc_for_last_month": "PFC Intake for last month",
     "intake_calories_for_last_month": "Calories intake for last month",
     "pfc_ratio_for_last_month": "PFC Ratio for last month"
+  },
+  "validators": {
+    "required_field": "Required field"
   }
 }

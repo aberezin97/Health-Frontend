@@ -31,7 +31,8 @@ const Datepicker = ({
     return () => {
       picker.destroy();
     };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
   return <div id={id} />;
 };
 

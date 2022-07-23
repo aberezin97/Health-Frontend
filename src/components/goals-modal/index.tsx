@@ -49,7 +49,7 @@ const GoalsModal = ({ show, onHide }: IGoalsModalProps) => {
           max={2500}
           step={1}
           className="mb-2"
-          color="#f76707"
+          color="#f59f00"
           onChange={([min, max]) => {
             setGoals((prevState) => ({
               ...prevState,

@@ -15,7 +15,7 @@ export const passwordValidator = Yup.string()
 export const emailValidator = Yup.string().email('Invalid email.');
 
 // Required
-const requiredMessage = 'Required field.';
+const requiredMessage = 'required_field';
 
 export const fieldRequiredValidator = fieldValidator.required(requiredMessage);
 

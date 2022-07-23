@@ -17,7 +17,7 @@ const ProductsPage = () => {
   const [currentEntry, setCurrentEntry] = useState<null | IUserProduct>(null);
   useEffect(() => {
     dispatch(getUserProducts());
-  }, []);
+  }, [dispatch]);
   return (
     <Page title={t('navbar:my_products')}>
       <Row>

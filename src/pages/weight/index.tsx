@@ -3,22 +3,23 @@ import { Row, Col, Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector, useAppDispatch } from 'store';
 import { getWeights } from 'controllers/weight';
-import WeightModal from 'components/weight-modal';
+import WeightModal, { IWeightModalShow } from 'components/weight-modal';
 import Table from 'components/table';
 import Chart from 'components/chart';
 import Page from 'components/page';
-import { IWeightEntry } from 'store/slices/weightSlice';
 import './index.css';
 
 const WeightPage = () => {
   const [t] = useTranslation('weight');
-  const [showModal, setShowModal] = useState(false);
-  const [currentEntry, setCurrentEntry] = useState<null | IWeightEntry>(null);
+  const [showModal, setShowModal] = useState<IWeightModalShow>({
+    status: false,
+    entry: null
+  });
   const dispatch = useAppDispatch();
   const { entries } = useAppSelector((state) => state.weight);
   useEffect(() => {
     dispatch(getWeights());
-  }, []);
+  }, [dispatch]);
   return (
     <Page title={t('weight')}>
       <Row>
@@ -77,24 +78,19 @@ const WeightPage = () => {
             ]}
             rowEvents={{
               onClick: (e, row, rowIndex) => {
-                setCurrentEntry(row);
-                setShowModal(true);
+                setShowModal({ status: true, entry: row });
               }
             }}
             addEntryButtonText={t('add_entry')}
             onClickAddEntryButton={() => {
-              setCurrentEntry(null);
-              setShowModal(true);
+              setShowModal({ status: true, entry: null });
             }}
           />
         </Col>
       </Row>
       <WeightModal
-        entry={currentEntry}
         show={showModal}
-        onHide={() => {
-          setShowModal(false);
-        }}
+        onHide={setShowModal}
       />
     </Page>
   );

@@ -14,7 +14,7 @@ const StatsPage = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getStats());
-  }, []);
+  }, [dispatch]);
   return (
     <Page title={t('stats')}>
       <Row>

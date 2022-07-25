@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Modal, Form, Row, Col
+  Modal, Form, Row, Col, Alert
 } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,7 @@ import moment from 'moment';
 import { useAppSelector, useAppDispatch } from 'store';
 import Button from 'components/button';
 import Input from 'components/input';
-import { IWeightEntry } from 'store/slices/weightSlice';
+import { EWeightTypeError, IWeightEntry } from 'store/slices/weightSlice';
 import { addWeight, modifyWeight, delWeight } from 'controllers/weight';
 import './index.css';
 
@@ -27,7 +27,7 @@ export interface IWeightModalProps {
 const WeightModal = ({ show, onHide, ...otherProps }: IWeightModalProps) => {
   const [t] = useTranslation('weight');
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.weight);
+  const { loading, error } = useAppSelector((state) => state.weight);
   const formik = useFormik({
     initialValues:
       show.entry !== null
@@ -64,6 +64,26 @@ const WeightModal = ({ show, onHide, ...otherProps }: IWeightModalProps) => {
       </Modal.Header>
       <Form onSubmit={formik.handleSubmit}>
         <Modal.Body>
+          {
+            error &&
+            (
+              error.type === EWeightTypeError.ADD_ENTRY ||
+              error.type === EWeightTypeError.DEL_ENTRY ||
+              error.type === EWeightTypeError.MODIFY_ENTRY
+            ) ?
+              <Row>
+                <Alert
+                  variant="danger"
+                  onClose={() => null}
+                  dismissible
+                >
+                  <Alert.Heading>Error</Alert.Heading>
+                  <p>{error.explanation}</p>
+                </Alert>
+              </Row>
+              :
+              null
+          }
           <Row>
             <Input
               as={Col}
@@ -107,7 +127,7 @@ const WeightModal = ({ show, onHide, ...otherProps }: IWeightModalProps) => {
                   if (show.entry !== null) {
                     dispatch(delWeight(show.entry.id))
                       .unwrap()
-                      .then(() => onHide());
+                      .then(() => onHide({ status: false, entry: show.entry }));
                   }
                 }}
                 isLoading={loading}

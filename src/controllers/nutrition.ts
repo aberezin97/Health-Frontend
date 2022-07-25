@@ -145,8 +145,8 @@ export const modifyNutritionGoals = createAsyncThunk(
             }
           })
           : await axios.put(
-            `/api/nutrition
-            /${date.year}/${date.month}/${date.day}/modify_goals/`,
+            `/api/nutrition/${date.year}/${date.month}/${date.day}` +
+            '/modify_goals/',
             args,
             {
               headers: {

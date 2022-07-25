@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react';
-import { Card } from 'react-bootstrap';
 import noUiSlider from 'nouislider';
 import './index.css';
 
 export interface ISliderProps {
-  children: string | JSX.Element | JSX.Element[];
   id: string;
   color: string;
-  value?: string | number | string[] | undefined;
   onChange: (arg: Array<string | number>) => void;
   start: string | number | Array<string | number>;
   max: number;
@@ -18,7 +15,6 @@ export interface ISliderProps {
 }
 
 const Slider = ({
-  children,
   id,
   min,
   max,
@@ -51,12 +47,7 @@ const Slider = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   return (
-    <Card {...otherProps}>
-      <Card.Header as="h4">{children}</Card.Header>
-      <Card.Body>
-        <div id={id} className="form-range" style={{ color }} />
-      </Card.Body>
-    </Card>
+    <div id={id} className="form-range" style={{ color }} {...otherProps} />
   );
 };
 

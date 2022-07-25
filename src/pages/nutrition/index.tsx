@@ -7,7 +7,7 @@ import { getNutritionData, YearMonthDay } from 'controllers/nutrition';
 import NutritionModal, {
   INutritionModalShow
 } from 'components/nutrition-modal';
-import GoalsModal from 'components/goals-modal';
+import GoalsModal, { IGoalsModalShow } from 'components/goals-modal';
 import DateModal from 'components/date-modal';
 import Page from 'components/page';
 import ProgressWidget from 'components/progress-widget';
@@ -20,8 +20,10 @@ const NutritionPage = () => {
   const [showNutritionModal, setShowNutritionModal] =
     useState<INutritionModalShow>({ status: false, entry: null });
   const [showDateModal, setShowDateModal] = useState(false);
-  const [showGoalsModal, setShowGoalsModal] = useState(false);
   const [date, setDate] = useState<YearMonthDay | undefined>(undefined);
+  const [showGoalsModal, setShowGoalsModal] = useState<IGoalsModalShow>(
+    { status: false, date }
+  );
   const dispatch = useAppDispatch();
   const {
     entries,
@@ -60,7 +62,7 @@ const NutritionPage = () => {
           <Button
             type="button"
             variant="white"
-            onClick={() => setShowGoalsModal(true)}
+            onClick={() => setShowGoalsModal({ status: true, date })}
           >
             <i className="mt-1 mb-1 fas fa-sliders-h fa-md"></i>
           </Button>
@@ -208,7 +210,7 @@ const NutritionPage = () => {
           />
           <GoalsModal
             show={showGoalsModal}
-            onHide={() => setShowGoalsModal(false)}
+            onHide={setShowGoalsModal}
           />
           <DateModal
             show={showDateModal}

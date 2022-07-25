@@ -7,7 +7,9 @@ import './index.css';
 
 const StatsCalories = () => {
   const [t] = useTranslation();
-  const { entries } = useAppSelector((state) => state.stats);
+  const entries = useAppSelector((state) => state.stats.entries)
+    .filter((entry) => entry.eatenCalories !== 0)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   return (
     <Card>
       <Card.Header as="h4">

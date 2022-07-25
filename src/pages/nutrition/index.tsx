@@ -55,6 +55,14 @@ const NutritionPage = () => {
           <Button
             type="button"
             variant="white"
+            onClick={() => null}
+            disabled
+          >
+            <i className="mt-1 mb-1 fas fa-tint fa-md"></i>
+          </Button>
+          <Button
+            type="button"
+            variant="white"
             onClick={() => setShowDateModal(true)}
           >
             <i className="mt-1 mb-1 fas fa-calendar-alt fa-md"></i>

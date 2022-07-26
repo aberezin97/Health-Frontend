@@ -17,7 +17,7 @@ import './i18n';
 
 axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL
   ? process.env.REACT_APP_BACKEND_URL
-  : 'http://192.168.1.3:8000';
+  : 'http://127.0.0.1:8000';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

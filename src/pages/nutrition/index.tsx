@@ -17,10 +17,10 @@ import './index.css';
 
 const NutritionPage = () => {
   const [t] = useTranslation(['nutrition']);
-  const [showNutritionModal, setShowNutritionModal] =
-    useState<INutritionModalShow>({ status: false, entry: null });
   const [showDateModal, setShowDateModal] = useState(false);
   const [date, setDate] = useState<YearMonthDay | undefined>(undefined);
+  const [showNutritionModal, setShowNutritionModal] =
+    useState<INutritionModalShow>({ status: false, date, entry: null });
   const [showGoalsModal, setShowGoalsModal] = useState<IGoalsModalShow>(
     { status: false, date }
   );
@@ -204,12 +204,12 @@ const NutritionPage = () => {
             ]}
             rowEvents={{
               onClick: (e, row, rowIndex) => {
-                setShowNutritionModal({ status: true, entry: row });
+                setShowNutritionModal({ status: true, date, entry: row });
               }
             }}
             addEntryButtonText={t('add_entry')}
             onClickAddEntryButton={() => {
-              setShowNutritionModal({ status: true, entry: null });
+              setShowNutritionModal({ status: true, date, entry: null });
             }}
           />
           <NutritionModal

@@ -14,7 +14,8 @@ import { INutritionEntry } from 'store/slices/nutritionSlice';
 import {
   addNutritionEntry,
   modifyNutritionEntry,
-  delNutritionEntry
+  delNutritionEntry,
+  YearMonthDay
 } from 'controllers/nutrition';
 import { useAppDispatch, useAppSelector } from 'store';
 import InputTypeahead from 'components/input-typeahead';
@@ -25,6 +26,7 @@ import './index.css';
 
 export interface INutritionModalShow {
   status: boolean;
+  date: YearMonthDay | undefined;
   entry: INutritionEntry | null;
 }
 
@@ -52,7 +54,8 @@ const NutritionModal = ({
 }: INutritionModalProps) => {
   const [t] = useTranslation('nutrition');
   const dispatch = useAppDispatch();
-  const { entries } = useAppSelector((state) => state.nutrition);
+  const { entries, loading } =
+    useAppSelector((state) => state.nutrition);
   const [entry, setEntry] = useState(
     show.entry !== null
       ? show.entry
@@ -98,17 +101,17 @@ const NutritionModal = ({
     }),
     onSubmit: (args) => {
       if (show.entry === null) {
-        dispatch(addNutritionEntry(args))
+        dispatch(addNutritionEntry({ ...args, date: show.date }))
           .unwrap()
           .then(() => {
-            onHide({ status: false, entry: show.entry });
+            onHide({ status: false, date: show.date, entry: show.entry });
             formik.resetForm();
           });
       } else {
-        dispatch(modifyNutritionEntry(args))
+        dispatch(modifyNutritionEntry({ ...args, date: show.date }))
           .unwrap()
           .then(() => {
-            onHide({ status: false, entry: show.entry });
+            onHide({ status: false, date: show.date, entry: show.entry });
             formik.resetForm();
           });
       }
@@ -120,7 +123,11 @@ const NutritionModal = ({
       centered
       size="lg"
       show={show.status}
-      onHide={() => onHide({ status: false, entry: show.entry })}
+      onHide={() => onHide({
+        status: false,
+        date: show.date,
+        entry: show.entry
+      })}
       {...otherProps}
     >
       <Modal.Header closeButton>
@@ -358,7 +365,7 @@ const NutritionModal = ({
         </Modal.Body>
         <Modal.Footer>
           {show.entry === null ? (
-            <Button type="submit" variant="success" isLoading={false}>
+            <Button type="submit" variant="success" isLoading={loading}>
               {t('add_entry')}
             </Button>
           ) : (
@@ -371,16 +378,20 @@ const NutritionModal = ({
                     dispatch(delNutritionEntry(show.entry.id))
                       .unwrap()
                       .then(() => {
-                        onHide({ status: false, entry: show.entry });
+                        onHide({
+                          status: false,
+                          date: show.date,
+                          entry: show.entry
+                        });
                         formik.resetForm();
                       });
                   }
                 }}
-                isLoading={false}
+                isLoading={loading}
               >
                 {t('del_entry')}
               </Button>
-              <Button type="submit" variant="warning" isLoading={false}>
+              <Button type="submit" variant="warning" isLoading={loading}>
                 {t('modify_entry')}
               </Button>
             </>

@@ -34,8 +34,18 @@ const WeightPage = () => {
                 data={{
                   x: 'x',
                   columns: [
-                    [t('weight'), ...entries.map((entry) => entry.weight)],
-                    ['x', ...entries.map((entry) => entry.date)]
+                    [
+                      t('weight'),
+                      ...entries.map(
+                        (entry) => entry.weight
+                      )
+                    ],
+                    [
+                      'x',
+                      ...entries.map(
+                        (entry) => entry.date
+                      )
+                    ]
                   ],
                   type: 'line',
                   colors: {
@@ -88,10 +98,7 @@ const WeightPage = () => {
           />
         </Col>
       </Row>
-      <WeightModal
-        show={showModal}
-        onHide={setShowModal}
-      />
+      <WeightModal show={showModal} onHide={setShowModal} />
     </Page>
   );
 };

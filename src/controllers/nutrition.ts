@@ -23,10 +23,10 @@ export const addNutritionEntry = createAsyncThunk(
   async (args: IAddNutritionEntryArguments, { rejectWithValue, getState }) => {
     const { token } = (getState() as { user: { token: string } }).user;
     try {
-      const { data } = args.date
+      const { data } = typeof args.date !== 'undefined'
         ? await axios.post(
-          `/api/nutrition
-          /${args.date.year}/${args.date.month}/${args.date.day}/`,
+          '/api/nutrition' +
+          `/${args.date.year}/${args.date.month}/${args.date.day}/`,
           args,
           {
             headers: {

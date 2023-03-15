@@ -42,6 +42,8 @@
   },
   "nutrition": {
     "nutrition": "Питание",
+    "liquid": "Жидкость",
+    "add_liquid": "Добавить жидкость",
     "calories": "Калории",
     "proteins": "Белки",
     "fats": "Жиры",
@@ -62,12 +64,19 @@
     "recent": "Недавние",
     "type_to_search": "Печатайте для поиска..."
   },
+  "exercises": {
+    "approaches": "Подходы",
+    "counts": "Кол-во",
+    "add_entry": "Добавить запись"
+  },
   "navbar": {
     "stats": "Статистика",
     "weight": "Вес",
     "nutrition": "Питание",
+    "exercises": "Упражнения",
     "my_products": "Мои продукты",
     "settings": "Настройки",
+    "profile": "Профиль",
     "sign_out": "Выйти"
   },
   "stats": {

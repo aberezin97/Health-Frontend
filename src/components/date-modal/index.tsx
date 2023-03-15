@@ -8,13 +8,14 @@ import './index.css';
 
 export interface IDateModal {
   date: YearMonthDay | undefined;
-  setDate: React.Dispatch<React.SetStateAction<YearMonthDay | undefined>>;
+  setDate?: React.Dispatch<React.SetStateAction<YearMonthDay | undefined>>;
+  onDateClick?: (date: YearMonthDay | undefined) => void;
   onHide: () => void;
   show: boolean;
 }
 
 const DateModal = ({
-  show, onHide, date, setDate
+  show, onHide, date, setDate, onDateClick
 }: IDateModal) => {
   const [t, i18n] = useTranslation('nutrition');
   const [tempDate, setTempDate] = useState<YearMonthDay | undefined>(date);
@@ -41,7 +42,12 @@ const DateModal = ({
         <Button
           variant="success"
           onClick={() => {
-            setDate(tempDate);
+            if (setDate !== undefined) {
+              setDate(tempDate);
+            }
+            if (onDateClick !== undefined) {
+              onDateClick(tempDate);
+            }
             onHide();
           }}
         >

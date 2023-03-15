@@ -6,11 +6,12 @@ import weightReducer from './slices/weightSlice';
 import userReducer from './slices/userSlice';
 import nutritionReducer from './slices/nutritionSlice';
 import statsReducer from './slices/statsSlice';
+import exerciseReducer from './slices/exercisesSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user', 'nutrition', 'weight', 'stats']
+  whitelist: ['user']
 };
 
 export const reducer = persistReducer(
@@ -19,7 +20,8 @@ export const reducer = persistReducer(
     weight: weightReducer,
     user: userReducer,
     nutrition: nutritionReducer,
-    stats: statsReducer
+    stats: statsReducer,
+    exercises: exerciseReducer
   })
 );
 

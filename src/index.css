@@ -57,3 +57,11 @@ input::-webkit-inner-spin-button {
   text-align: center !important;
   transform: translate(-50%, 35%) !important;
 }
+
+.react-bootstrap-table table {
+    table-layout: auto;
+}
+
+.list-group-transparent .list-group-item.active {
+  border-left: none;
+}

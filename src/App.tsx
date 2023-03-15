@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import ProductsPage from 'pages/products';
@@ -18,9 +18,11 @@ import PublicRoute from 'components/public-route';
 import { useAppSelector } from 'store';
 import { ROUTES } from 'routes';
 import './App.css';
+import ExercisesPage from 'pages/exercises';
+import ProfilePage from 'pages/profile';
+import RootPage from 'pages/root';
 
 const App = () => {
-  const userData = useAppSelector((state) => state.user.data);
   const { language } = useAppSelector((state) => state.user);
   const [, i18n] = useTranslation();
   useEffect(() => {
@@ -31,97 +33,108 @@ const App = () => {
     <Routes>
       <Route
         path="/"
-        element={
-          userData === null ? (
-            <Navigate to={ROUTES.SIGN_IN} />
-          ) : (
-            <Navigate to={ROUTES.STATS} />
-          )
-        }
-      />
-      <Route
-        path={ROUTES.SIGN_IN}
-        element={
-          <PublicRoute>
-            <SignInPage />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path={ROUTES.SIGN_UP}
-        element={
-          <PublicRoute>
-            <SignUpPage />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path={`${ROUTES.ACTIVATE}/:uidb64/:token`}
-        element={
-          <PublicRoute>
-            <ActivatePage />
-          </PublicRoute>
-        }
-      />
-      <Route path={ROUTES.RESET}>
+        element={<RootPage />}
+      >
         <Route
-          index
+          path={ROUTES.SIGN_IN}
           element={
             <PublicRoute>
-              <SendPasswordResetLinkPage />
+              <SignInPage />
             </PublicRoute>
           }
         />
         <Route
-          path=":token"
+          path={ROUTES.SIGN_UP}
           element={
             <PublicRoute>
-              <ResetPasswordPage />
+              <SignUpPage />
             </PublicRoute>
           }
         />
+        <Route
+          path={`${ROUTES.ACTIVATE}/:uidb64/:token`}
+          element={
+            <PublicRoute>
+              <ActivatePage />
+            </PublicRoute>
+          }
+        />
+        <Route path={ROUTES.RESET}>
+          <Route
+            index
+            element={
+              <PublicRoute>
+                <SendPasswordResetLinkPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path=":token"
+            element={
+              <PublicRoute>
+                <ResetPasswordPage />
+              </PublicRoute>
+            }
+          />
+        </Route>
+        <Route
+          path={`:userId${ROUTES.WEIGHT}`}
+          element={
+            <PrivateRoute>
+              <WeightPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={`:userId${ROUTES.STATS}`}
+          element={
+            <PrivateRoute>
+              <StatsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={`:userId${ROUTES.NUTRITION}`}
+          element={
+            <PrivateRoute>
+              <NutritionPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={`:userId${ROUTES.EXERCISES}`}
+          element={
+            <PrivateRoute>
+              <ExercisesPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.PRODUCTS}
+          element={
+            <PrivateRoute>
+              <ProductsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.SETTINGS}
+          element={
+            <PrivateRoute>
+              <SettingsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.PROFILE}
+          element={
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
+          }
+        />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
-      <Route
-        path={ROUTES.WEIGHT}
-        element={
-          <PrivateRoute>
-            <WeightPage />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path={ROUTES.STATS}
-        element={
-          <PrivateRoute>
-            <StatsPage />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path={ROUTES.NUTRITION}
-        element={
-          <PrivateRoute>
-            <NutritionPage />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PRODUCTS}
-        element={
-          <PrivateRoute>
-            <ProductsPage />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path={ROUTES.SETTINGS}
-        element={
-          <PrivateRoute>
-            <SettingsPage />
-          </PrivateRoute>
-        }
-      />
-      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

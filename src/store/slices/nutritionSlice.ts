@@ -4,7 +4,9 @@ import {
   addNutritionEntry,
   delNutritionEntry,
   modifyNutritionEntry,
-  modifyNutritionGoals
+  modifyNutritionGoals,
+  addLiquidEntry,
+  delLiquidEntry
 } from 'controllers/nutrition';
 
 export const enum ENutritionTypeError {
@@ -12,7 +14,9 @@ export const enum ENutritionTypeError {
   ADD_ENTRY = '@NutritionTypeError/AddEntryError',
   DEL_ENTRY = '@NutritionTypeError/DelEntryError',
   MODIFY_ENTRY = '@NutritionTypeError/ModifyEntryError',
-  MODIFY_GOALS = '@NutritionTypeError/ModifyGoalsError'
+  MODIFY_GOALS = '@NutritionTypeError/ModifyGoalsError',
+  ADD_LIQUID_ENTRY = '@NutritionTypeError/AddLiquidEntryError',
+  DEL_LIQUID_ENTRY = '@NutritionTypeError/DelLiquidEntryError',
 }
 
 export type NutritionError = {
@@ -31,10 +35,17 @@ export interface INutritionEntry {
   weight: number;
 }
 
+export interface ILiquidEntry {
+  id: number;
+  time: string;
+  quantity: number;
+}
+
 export interface INutritionState {
   loading: boolean;
   error: null | NutritionError;
   entries: INutritionEntry[];
+  liquidEntries: ILiquidEntry[];
   limitCalories: number;
   limitProteins: number;
   limitFats: number;
@@ -43,12 +54,14 @@ export interface INutritionState {
   goalProteins: number;
   goalFats: number;
   goalCarbohydrates: number;
+  goalLiquid: number;
 }
 
 const initialState: INutritionState = {
   loading: false,
   error: null,
   entries: [],
+  liquidEntries: [],
   limitCalories: 0,
   limitProteins: 0,
   limitFats: 0,
@@ -56,7 +69,8 @@ const initialState: INutritionState = {
   goalCalories: 0,
   goalProteins: 0,
   goalFats: 0,
-  goalCarbohydrates: 0
+  goalCarbohydrates: 0,
+  goalLiquid: 0
 };
 
 export const nutritionSlice = createSlice({
@@ -80,7 +94,9 @@ export const nutritionSlice = createSlice({
         state.goalProteins = payload.goalProteins;
         state.goalFats = payload.goalFats;
         state.goalCarbohydrates = payload.goalCarbohydrates;
+        state.goalLiquid = payload.goalLiquid;
         state.entries = payload.entries;
+        state.liquidEntries = payload.liquidEntries;
       })
       .addCase(getNutritionData.rejected, (state) => {
         state.loading = false;
@@ -156,12 +172,49 @@ export const nutritionSlice = createSlice({
         state.goalFats = payload.goalFats;
         state.limitCarbohydrates = payload.limitCarbohydrates;
         state.goalCarbohydrates = payload.goalCarbohydrates;
+        state.goalLiquid = payload.goalLiquid;
       })
       .addCase(modifyNutritionGoals.rejected, (state) => {
         state.loading = false;
         state.error = {
           type: ENutritionTypeError.MODIFY_GOALS,
           explanation: "Couldn't change goals"
+        };
+      })
+      // Add Liquid
+      .addCase(addLiquidEntry.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addLiquidEntry.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.liquidEntries = [
+          ...state.liquidEntries,
+          payload
+        ];
+      })
+      .addCase(addLiquidEntry.rejected, (state) => {
+        state.loading = false;
+        state.error = {
+          type: ENutritionTypeError.ADD_LIQUID_ENTRY,
+          explanation: "Couldn't add liquid"
+        };
+      })
+      // Del Liquid
+      .addCase(delLiquidEntry.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(delLiquidEntry.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.liquidEntries = state.liquidEntries
+          .filter((liquid) => liquid.id !== payload);
+      })
+      .addCase(delLiquidEntry.rejected, (state) => {
+        state.loading = false;
+        state.error = {
+          type: ENutritionTypeError.DEL_LIQUID_ENTRY,
+          explanation: "Couldn't del liquid"
         };
       });
   }

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import {
+  Row, Col, Button
+} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { useAppDispatch, useAppSelector } from 'store';
@@ -14,9 +16,15 @@ import ProgressWidget from 'components/progress-widget';
 import RatioWidget from 'components/ratio-widget';
 import Table from 'components/table';
 import './index.css';
+import { numberSortFunc } from 'utils/sorters';
+import LiquidModal from 'components/liquid-modal';
+import LiquidProgress from 'components/liquid-progress';
+import { useParams } from 'react-router-dom';
 
 const NutritionPage = () => {
   const [t] = useTranslation(['nutrition']);
+  const { userId } = useParams();
+  const [showLiquidModal, setLiquidModal] = useState(false);
   const [showDateModal, setShowDateModal] = useState(false);
   const [date, setDate] = useState<YearMonthDay | undefined>(undefined);
   const [showNutritionModal, setShowNutritionModal] =
@@ -27,18 +35,23 @@ const NutritionPage = () => {
   const dispatch = useAppDispatch();
   const {
     entries,
+    liquidEntries,
     limitCalories,
     limitProteins,
     limitFats,
     limitCarbohydrates,
+    goalLiquid,
     goalCalories,
     goalProteins,
     goalFats,
     goalCarbohydrates
   } = useAppSelector((state) => state.nutrition);
   useEffect(() => {
-    dispatch(getNutritionData(date));
-  }, [dispatch, date]);
+    dispatch(getNutritionData({
+      userId: Number(userId),
+      date
+    }));
+  }, [dispatch, date, userId]);
   return (
     <Page
       pretitle={
@@ -55,8 +68,7 @@ const NutritionPage = () => {
           <Button
             type="button"
             variant="white"
-            onClick={() => null}
-            disabled
+            onClick={() => setLiquidModal(true)}
           >
             <i className="mt-1 mb-1 fas fa-tint fa-md"></i>
           </Button>
@@ -77,6 +89,16 @@ const NutritionPage = () => {
         </div>
       }
     >
+      <Row className='mb-2'>
+        <Col>
+          <LiquidProgress
+            max={goalLiquid}
+            value={liquidEntries.reduce((prev, curr) => (
+              prev + curr.quantity
+            ), 0)}
+          />
+        </Col>
+      </Row>
       <Row>
         <Col lg={8}>
           <Row>
@@ -144,62 +166,81 @@ const NutritionPage = () => {
               {
                 dataField: 'time',
                 text: t('time'),
-                sort: true,
-                headerStyle: { width: '85px' }
+                sort: true
+                // classes: 'w-1',
+                // headerClasses: 'w-1'
+                // headerStyle: { width: '85px' }
               },
               {
                 dataField: 'name',
                 text: t('name'),
-                sort: true,
-                headerStyle: { width: '100%' },
-                style: {
-                  textTransform: 'lowercase'
-                }
+                sort: true
+                // classes: 'w-100',
+                // headerClasses: 'w-1'
+                // headerStyle: { width: '100%' },
+                // style: {
+                //   textTransform: 'lowercase'
+                // }
               },
               {
                 dataField: 'calories',
                 text: t('cals'),
                 sort: true,
-                headerStyle: { width: '80px' },
-                style: {
-                  textAlign: 'center'
-                }
+                // classes: 'w-1',
+                // headerClasses: 'w-1',
+                // headerStyle: { width: '80px' },
+                // style: {
+                //   textAlign: 'center'
+                // },
+                sortFunc: numberSortFunc
               },
               {
                 dataField: 'proteins',
                 text: t('proteins'),
                 sort: true,
-                headerStyle: { width: '80px' },
-                style: {
-                  textAlign: 'center'
-                }
+                // classes: 'w-1',
+                // headerClasses: 'w-1',
+                // headerStyle: { width: '80px' },
+                // style: {
+                //   textAlign: 'center'
+                // },
+                sortFunc: numberSortFunc
               },
               {
                 dataField: 'fats',
                 text: t('fats'),
                 sort: true,
-                headerStyle: { width: '80px' },
-                style: {
-                  textAlign: 'center'
-                }
+                // classes: 'w-1',
+                // headerClasses: 'w-1',
+                // headerStyle: { width: '80px' },
+                // style: {
+                //   textAlign: 'center'
+                // },
+                sortFunc: numberSortFunc
               },
               {
                 dataField: 'carbohydrates',
                 text: t('carbs'),
                 sort: true,
-                headerStyle: { width: '80px' },
-                style: {
-                  textAlign: 'center'
-                }
+                // classes: 'w-1',
+                // headerClasses: 'w-1',
+                // headerStyle: { width: '80px' },
+                // style: {
+                //   textAlign: 'center'
+                // },
+                sortFunc: numberSortFunc
               },
               {
                 dataField: 'weight',
                 text: t('weight'),
                 sort: true,
-                headerStyle: { width: '80px' },
-                style: {
-                  textAlign: 'center'
-                }
+                // classes: 'w-1',
+                // headerClasses: 'w-1',
+                // headerStyle: { width: '80px' },
+                // style: {
+                //   textAlign: 'center'
+                // },
+                sortFunc: numberSortFunc
               }
             ]}
             rowEvents={{
@@ -215,6 +256,7 @@ const NutritionPage = () => {
           <NutritionModal
             show={showNutritionModal}
             onHide={setShowNutritionModal}
+            userId={Number(userId)}
           />
           <GoalsModal
             show={showGoalsModal}
@@ -225,6 +267,11 @@ const NutritionPage = () => {
             onHide={() => setShowDateModal(false)}
             date={date}
             setDate={setDate}
+          />
+          <LiquidModal
+            show={showLiquidModal}
+            onHide={() => setLiquidModal(false)}
+            userId={Number(userId)}
           />
         </Col>
       </Row>

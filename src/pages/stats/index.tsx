@@ -8,13 +8,15 @@ import StatsCalories from 'components/stats-calories';
 import { useAppDispatch } from 'store';
 import { getStats } from 'controllers/stats';
 import './index.css';
+import { useParams } from 'react-router-dom';
 
 const StatsPage = () => {
   const [t] = useTranslation('navbar');
   const dispatch = useAppDispatch();
+  const { userId } = useParams();
   useEffect(() => {
-    dispatch(getStats());
-  }, [dispatch]);
+    dispatch(getStats(Number(userId)));
+  }, [dispatch, userId]);
   return (
     <Page title={t('stats')}>
       <Row>

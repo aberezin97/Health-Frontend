@@ -3,10 +3,10 @@ import axios from 'axios';
 
 export const getStats = createAsyncThunk(
   'stats/getStats',
-  async (args, { rejectWithValue, getState }) => {
+  async (userId: number, { rejectWithValue, getState }) => {
     const { token } = (getState() as { user: { token: string } }).user;
     try {
-      const { data } = await axios.get('/api/stats/', {
+      const { data } = await axios.get(`/api/${userId}/stats/`, {
         headers: {
           Authorization: `Token ${token}`
         }

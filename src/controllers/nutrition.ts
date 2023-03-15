@@ -16,17 +16,22 @@ export interface IAddNutritionEntryArguments {
   carbohydrates: number;
   weight: number;
   date?: YearMonthDay | undefined;
+  userId: number;
 }
 
 export const addNutritionEntry = createAsyncThunk(
   'nutrition/addNutritionEntry',
-  async (args: IAddNutritionEntryArguments, { rejectWithValue, getState }) => {
+  async ({
+    date,
+    userId,
+    ...args
+  }: IAddNutritionEntryArguments, { rejectWithValue, getState }) => {
     const { token } = (getState() as { user: { token: string } }).user;
     try {
-      const { data } = typeof args.date !== 'undefined'
+      const { data } = typeof date !== 'undefined'
         ? await axios.post(
-          '/api/nutrition' +
-          `/${args.date.year}/${args.date.month}/${args.date.day}/`,
+          `/api/${userId}/nutrition` +
+          `/${date.year}/${date.month}/${date.day}/`,
           args,
           {
             headers: {
@@ -34,7 +39,7 @@ export const addNutritionEntry = createAsyncThunk(
             }
           }
         )
-        : await axios.post('/api/nutrition/', args, {
+        : await axios.post(`/api/${userId}/nutrition/`, args, {
           headers: {
             Authorization: `Token ${token}`
           }
@@ -88,22 +93,28 @@ export const modifyNutritionEntry = createAsyncThunk(
   }
 );
 
-export type GetNutritionDataArgs = YearMonthDay | undefined;
+interface IGetNutritionDataArgs {
+  userId: number;
+  date?: YearMonthDay;
+}
 
 export const getNutritionData = createAsyncThunk(
   'nutrition/getNutritionData',
-  async (args: GetNutritionDataArgs, { rejectWithValue, getState }) => {
+  async ({
+    userId,
+    date
+  }: IGetNutritionDataArgs, { rejectWithValue, getState }) => {
     const { token } = (getState() as { user: { token: string } }).user;
     try {
       const { data } =
-        typeof args === 'undefined'
-          ? await axios.get('/api/nutrition/', {
+        typeof date === 'undefined'
+          ? await axios.get(`/api/${userId}/nutrition/`, {
             headers: {
               Authorization: `Token ${token}`
             }
           })
           : await axios.get(
-            `/api/nutrition/${args.year}/${args.month}/${args.day}/`,
+            `/api/${userId}/nutrition/${date.year}/${date.month}/${date.day}/`,
             {
               headers: {
                 Authorization: `Token ${token}`
@@ -127,6 +138,7 @@ export interface IModifyNutritionGoalsArguments {
   goalFats: number;
   limitCarbohydrates: number;
   goalCarbohydrates: number;
+  goalLiquid: number;
 }
 
 export const modifyNutritionGoals = createAsyncThunk(
@@ -155,6 +167,62 @@ export const modifyNutritionGoals = createAsyncThunk(
             }
           );
       return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export interface IAddLiquidEntryArguments {
+  date?: YearMonthDay | undefined;
+  time: string;
+  quantity: number;
+  userId: number;
+}
+
+export const addLiquidEntry = createAsyncThunk(
+  'nutrition/addLiquidEntry',
+  async (
+    { date, userId, ...args }: IAddLiquidEntryArguments,
+    { rejectWithValue, getState }
+  ) => {
+    const { token } = (getState() as { user: { token: string } }).user;
+    try {
+      const { data } =
+        typeof date === 'undefined'
+          ? await axios.post(`/api/${userId}/nutrition/liquid/`, args, {
+            headers: {
+              Authorization: `Token ${token}`
+            }
+          })
+          : await axios.post(
+            // eslint-disable-next-line max-len
+            `/api/${userId}/nutrition/liquid/${date.year}/${date.month}/${date.day}`,
+            args,
+            {
+              headers: {
+                Authorization: `Token ${token}`
+              }
+            }
+          );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const delLiquidEntry = createAsyncThunk(
+  'nutrition/delLiquidEntry',
+  async (id: number, { rejectWithValue, getState }) => {
+    const { token } = (getState() as { user: { token: string } }).user;
+    try {
+      await axios.delete(`/api/nutrition/liquid/${id}/`, {
+        headers: {
+          Authorization: `Token ${token}`
+        }
+      });
+      return id;
     } catch (error) {
       return rejectWithValue(error);
     }

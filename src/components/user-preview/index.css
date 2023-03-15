@@ -1,0 +1,9 @@
+.name-block {
+  width: 124.75px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.name-text {
+  text-overflow: ellipsis;
+}

@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import {
-  Modal, Form, Row, Col
+  Modal, Form, Row, Col, FormCheck
 } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -20,9 +20,10 @@ import {
 import { useAppDispatch, useAppSelector } from 'store';
 import InputTypeahead from 'components/input-typeahead';
 import { fieldRequiredValidator } from 'utils/validators';
-import { getUserProducts } from 'controllers/user';
+import { addUserProduct, getUserProducts } from 'controllers/user';
 import { IUserProduct } from 'store/slices/userSlice';
 import './index.css';
+import cn from 'classnames';
 
 export interface INutritionModalShow {
   status: boolean;
@@ -33,6 +34,7 @@ export interface INutritionModalShow {
 export interface INutritionModalProps {
   show: INutritionModalShow;
   onHide: (value: React.SetStateAction<INutritionModalShow>) => void;
+  userId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
 }
@@ -40,7 +42,7 @@ export interface INutritionModalProps {
 export const enum ProductType {
   RECENT = 'RECENT',
   USER = 'USER',
-  GLOBAL = 'GLOBAL'
+  GLOBAL = 'GLOBAL',
 }
 
 export interface IProduct extends IUserProduct {
@@ -50,12 +52,13 @@ export interface IProduct extends IUserProduct {
 const NutritionModal = ({
   show,
   onHide,
+  userId,
   ...otherProps
 }: INutritionModalProps) => {
   const [t] = useTranslation('nutrition');
   const dispatch = useAppDispatch();
-  const { entries, loading } =
-    useAppSelector((state) => state.nutrition);
+  const [isAddToMyProducts, setIsAddToMyProducts] = useState<boolean>(false);
+  const { entries, loading } = useAppSelector((state) => state.nutrition);
   const [entry, setEntry] = useState(
     show.entry !== null
       ? show.entry
@@ -101,14 +104,17 @@ const NutritionModal = ({
     }),
     onSubmit: (args) => {
       if (show.entry === null) {
-        dispatch(addNutritionEntry({ ...args, date: show.date }))
+        dispatch(addNutritionEntry({ ...args, userId, date: show.date }))
           .unwrap()
           .then(() => {
+            if (isAddToMyProducts) {
+              dispatch(addUserProduct(args));
+            }
             onHide({ status: false, date: show.date, entry: show.entry });
             formik.resetForm();
           });
       } else {
-        dispatch(modifyNutritionEntry({ ...args, date: show.date }))
+        dispatch(modifyNutritionEntry({ ...args, userId, date: show.date }))
           .unwrap()
           .then(() => {
             onHide({ status: false, date: show.date, entry: show.entry });
@@ -123,11 +129,13 @@ const NutritionModal = ({
       centered
       size="lg"
       show={show.status}
-      onHide={() => onHide({
-        status: false,
-        date: show.date,
-        entry: show.entry
-      })}
+      onHide={() =>
+        onHide({
+          status: false,
+          date: show.date,
+          entry: show.entry
+        })
+      }
       {...otherProps}
     >
       <Modal.Header closeButton>
@@ -155,6 +163,7 @@ const NutritionModal = ({
                   formik.setFieldValue('proteins', entity.proteins);
                   formik.setFieldValue('fats', entity.fats);
                   formik.setFieldValue('carbohydrates', entity.carbohydrates);
+                  setIsAddToMyProducts(false);
                 }
               }}
               onSearch={(query: string) => {
@@ -162,17 +171,27 @@ const NutritionModal = ({
                 dispatch(getUserProducts())
                   .unwrap()
                   .then((data) => {
-                    setIsUserProductsLoading(false);
                     setOptions([
-                      ...data.map((product: IUserProduct) => ({
-                        ...product,
-                        type: ProductType.USER
-                      })),
-                      ...entries.map((product) => ({
-                        ...(product as IUserProduct),
-                        type: ProductType.RECENT
-                      }))
+                      ...data
+                        .filter(
+                          (product: IUserProduct) =>
+                            product.name.indexOf(query) !== -1
+                        )
+                        .map((product: IUserProduct) => ({
+                          ...product,
+                          type: ProductType.USER
+                        })),
+                      ...entries
+                        .filter(
+                          (product: IUserProduct) =>
+                            product.name.indexOf(query) !== -1
+                        )
+                        .map((product) => ({
+                          ...(product as IUserProduct),
+                          type: ProductType.RECENT
+                        }))
                     ]);
+                    setIsUserProductsLoading(false);
                   });
               }}
               value={formik.values.name}
@@ -244,7 +263,7 @@ const NutritionModal = ({
                               {t('fats')}: {(i as IProduct).fats}
                             </span>
                             <span className="info-product">
-                              <span style={{ backgroundColor: '#2fb344' }}/>
+                              <span style={{ backgroundColor: '#2fb344' }} />
                               {t('carbs')}: {(i as IProduct).carbohydrates}
                             </span>
                           </div>
@@ -363,11 +382,31 @@ const NutritionModal = ({
             </Input>
           </Row>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className={cn({
+          'justify-content-between': show.entry === null
+        })}>
           {show.entry === null ? (
-            <Button type="submit" variant="success" isLoading={loading}>
-              {t('add_entry')}
-            </Button>
+            <>
+              <FormCheck type='switch'>
+                <FormCheck.Input
+                  type="checkbox"
+                  checked={isAddToMyProducts}
+                  onChange={(e) => {
+                    setIsAddToMyProducts(e.target.checked);
+                  }}
+                />
+                <FormCheck.Label
+                  className={cn({
+                    'text-muted': !isAddToMyProducts
+                  })}
+                >
+                  Add to my products
+                </FormCheck.Label>
+              </FormCheck>
+              <Button type="submit" variant="success" isLoading={loading}>
+                {t('add_entry')}
+              </Button>
+            </>
           ) : (
             <>
               <Button

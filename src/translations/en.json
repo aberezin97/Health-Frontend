@@ -35,6 +35,7 @@
   "nutrition": {
     "nutrition": "Nutrition",
     "calories": "Calories",
+    "liquid": "Liquid",
     "cals": "Cals",
     "proteins": "Proteins",
     "fats": "Fats",
@@ -62,11 +63,18 @@
     "del_entry": "Del Entry",
     "change_of_the_weight_for_last_month": "Change of the weight for last month"
   },
+  "exercises": {
+    "approaches": "Approaches",
+    "counts": "Counts",
+    "add_entry": "Add Entry"
+  },
   "navbar": {
     "stats": "Stats",
     "weight": "Weight",
     "nutrition": "Nutrition",
+    "exercises": "Exercises",
     "my_products": "My Products",
+    "profile": "Profile",
     "settings": "Settings",
     "sign_out": "Sign Out"
   },

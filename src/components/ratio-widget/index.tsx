@@ -21,7 +21,7 @@ const RatioWidget = ({ title }: IRatioWidgetProps) => {
           data={{
             columns: [
               [
-                t('calories'),
+                t('proteins'),
                 entries.reduce(
                   (prev, current) =>
                     prev + (current.proteins / 100) * current.weight,

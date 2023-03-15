@@ -7,6 +7,7 @@ import ProductModal from 'components/products-modal';
 import { IUserProduct } from 'store/slices/userSlice';
 import { useAppSelector, useAppDispatch } from 'store';
 import { getUserProducts } from 'controllers/user';
+import { numberSortFunc } from 'utils/sorters';
 import './index.css';
 
 const ProductsPage = () => {
@@ -25,6 +26,8 @@ const ProductsPage = () => {
           <Table
             sort={{ dateField: 'time', order: 'desc' }}
             data={products}
+            isHeaderOn={true}
+            searchKey='name'
             columns={[
               {
                 dataField: 'name',
@@ -42,7 +45,8 @@ const ProductsPage = () => {
                 headerStyle: { width: '80px' },
                 style: {
                   textAlign: 'center'
-                }
+                },
+                sortFunc: numberSortFunc
               },
               {
                 dataField: 'proteins',
@@ -51,7 +55,8 @@ const ProductsPage = () => {
                 headerStyle: { width: '80px' },
                 style: {
                   textAlign: 'center'
-                }
+                },
+                sortFunc: numberSortFunc
               },
               {
                 dataField: 'fats',
@@ -60,7 +65,8 @@ const ProductsPage = () => {
                 headerStyle: { width: '80px' },
                 style: {
                   textAlign: 'center'
-                }
+                },
+                sortFunc: numberSortFunc
               },
               {
                 dataField: 'carbohydrates',
@@ -69,7 +75,8 @@ const ProductsPage = () => {
                 headerStyle: { width: '80px' },
                 style: {
                   textAlign: 'center'
-                }
+                },
+                sortFunc: numberSortFunc
               }
             ]}
             rowEvents={{

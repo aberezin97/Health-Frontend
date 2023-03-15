@@ -1,27 +1,27 @@
 import React, { useEffect } from 'react';
-import noUiSlider from 'nouislider';
+import noUiSlider, { Options } from 'nouislider';
 import './index.css';
+import cn from 'classnames';
 
-export interface ISliderProps {
+export interface ISliderProps extends Options {
   id: string;
   color: string;
   onChange: (arg: Array<string | number>) => void;
-  start: string | number | Array<string | number>;
-  max: number;
-  step?: number;
-  min: number;
+  className?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
 }
 
 const Slider = ({
   id,
-  min,
-  max,
   step,
   start,
+  range,
   onChange,
+  connect,
+  tooltips,
   color,
+  className,
   ...otherProps
 }: ISliderProps) => {
   useEffect(() => {
@@ -30,12 +30,9 @@ const Slider = ({
       {
         start,
         step,
-        tooltips: [true, true],
-        connect: true,
-        range: {
-          min,
-          max
-        }
+        tooltips,
+        connect,
+        range
       }
     );
 
@@ -47,7 +44,12 @@ const Slider = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   return (
-    <div id={id} className="form-range" style={{ color }} {...otherProps} />
+    <div
+      id={id}
+      className={cn('form-range', className)}
+      style={{ color }}
+      {...otherProps}
+    />
   );
 };
 

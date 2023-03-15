@@ -15,7 +15,7 @@ const PublicRoute = ({ children }: IPublicRoute) => {
     return children;
   }
 
-  return <Navigate to={ROUTES.STATS} />;
+  return <Navigate to={`/${userData.id}${ROUTES.STATS}`} />;
 };
 
 export default PublicRoute;

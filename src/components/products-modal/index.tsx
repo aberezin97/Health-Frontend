@@ -12,7 +12,7 @@ import {
   delUserProduct
 } from 'controllers/user';
 import { IUserProduct } from 'store/slices/userSlice';
-import { useAppDispatch } from 'store';
+import { useAppDispatch, useAppSelector } from 'store';
 import './index.css';
 
 export interface IProductModalProps {
@@ -31,6 +31,7 @@ const ProductModal = ({
 }: IProductModalProps) => {
   const [t] = useTranslation();
   const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.user);
   const formik = useFormik({
     initialValues:
       entry !== null
@@ -153,7 +154,7 @@ const ProductModal = ({
         </Modal.Body>
         <Modal.Footer>
           {entry === null ? (
-            <Button variant="success" type="submit" isLoading={false}>
+            <Button variant="success" type="submit" isLoading={loading}>
               {t('user:add_product')}
             </Button>
           ) : (
@@ -166,11 +167,11 @@ const ProductModal = ({
                     .unwrap()
                     .then(() => onHide());
                 }}
-                isLoading={false}
+                isLoading={loading}
               >
                 {t('user:del_product')}
               </Button>
-              <Button type="submit" variant="warning" isLoading={false}>
+              <Button type="submit" variant="warning" isLoading={loading}>
                 {t('user:modify_product')}
               </Button>
             </>

@@ -8,4 +8,6 @@ export const enum ROUTES {
   PRODUCTS = '/products',
   WEIGHT = '/weight',
   STATS = '/stats',
+  EXERCISES = '/exercises',
+  PROFILE= '/profile'
 }

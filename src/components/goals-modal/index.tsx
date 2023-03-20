@@ -13,6 +13,7 @@ import GoalsBody from 'components/goals-body';
 export interface IGoalsModalShow {
   status: boolean;
   date: YearMonthDay | undefined;
+  id: number;
 }
 
 export interface IGoalsModalProps {
@@ -73,7 +74,7 @@ const GoalsModal = ({ show, onHide }: IGoalsModalProps) => {
   return (
     <Modal
       show={show.status}
-      onHide={() => onHide({ status: false, date: show.date })}
+      onHide={() => onHide({ status: false, id: 0, date: show.date })}
       centered
       size="lg"
     >
@@ -106,9 +107,13 @@ const GoalsModal = ({ show, onHide }: IGoalsModalProps) => {
           variant="success"
           isLoading={loading}
           onClick={() => {
-            dispatch(modifyNutritionGoals({ ...goals, date: show.date }))
+            dispatch(modifyNutritionGoals({
+              ...goals,
+              id: show.id,
+              date: show.date
+            }))
               .unwrap()
-              .then(() => onHide({ status: false, date: show.date }));
+              .then(() => onHide({ status: false, id: 0, date: show.date }));
           }}
         >
           {t('modify_goals')}

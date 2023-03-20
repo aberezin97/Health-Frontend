@@ -129,6 +129,7 @@ export const getNutritionData = createAsyncThunk(
 );
 
 export interface IModifyNutritionGoalsArguments {
+  id: number;
   date?: YearMonthDay | undefined;
   limitCalories: number;
   goalCalories: number;
@@ -144,20 +145,20 @@ export interface IModifyNutritionGoalsArguments {
 export const modifyNutritionGoals = createAsyncThunk(
   'nutrition/modifyNutritionGoals',
   async (
-    { date, ...args }: IModifyNutritionGoalsArguments,
+    { date, id, ...args }: IModifyNutritionGoalsArguments,
     { rejectWithValue, getState }
   ) => {
     const { token } = (getState() as { user: { token: string } }).user;
     try {
       const { data } =
         typeof date === 'undefined'
-          ? await axios.put('/api/nutrition/modify_goals/', args, {
+          ? await axios.put(`/api/${id}/nutrition/modify_goals/`, args, {
             headers: {
               Authorization: `Token ${token}`
             }
           })
           : await axios.put(
-            `/api/nutrition/${date.year}/${date.month}/${date.day}` +
+            `/api/${id}/nutrition/${date.year}/${date.month}/${date.day}` +
             '/modify_goals/',
             args,
             {

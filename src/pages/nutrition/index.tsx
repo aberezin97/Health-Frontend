@@ -20,6 +20,7 @@ import { numberSortFunc } from 'utils/sorters';
 import LiquidModal from 'components/liquid-modal';
 import LiquidProgress from 'components/liquid-progress';
 import { useParams } from 'react-router-dom';
+import { ENutritionTypeError } from 'store/slices/nutritionSlice';
 
 const NutritionPage = () => {
   const [t] = useTranslation(['nutrition']);
@@ -30,10 +31,11 @@ const NutritionPage = () => {
   const [showNutritionModal, setShowNutritionModal] =
     useState<INutritionModalShow>({ status: false, date, entry: null });
   const [showGoalsModal, setShowGoalsModal] = useState<IGoalsModalShow>(
-    { status: false, date }
+    { status: false, date, id: Number(userId) }
   );
   const dispatch = useAppDispatch();
   const {
+    error,
     entries,
     liquidEntries,
     limitCalories,
@@ -82,12 +84,17 @@ const NutritionPage = () => {
           <Button
             type="button"
             variant="white"
-            onClick={() => setShowGoalsModal({ status: true, date })}
+            onClick={() => setShowGoalsModal({
+              status: true,
+              date,
+              id: Number(userId)
+            })}
           >
             <i className="mt-1 mb-1 fas fa-sliders-h fa-md"></i>
           </Button>
         </div>
       }
+      forbidden={error?.type === ENutritionTypeError.GET_DATA_FORBIDDEN}
     >
       <Row className='mb-2'>
         <Col>

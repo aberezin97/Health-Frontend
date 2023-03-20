@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import {
   getNutritionData,
   addNutritionEntry,
@@ -11,6 +12,7 @@ import {
 
 export const enum ENutritionTypeError {
   GET_DATA = '@NutritionTypeError/GetDataError',
+  GET_DATA_FORBIDDEN = '@NutritionTypeError/GetDataForbiddenError',
   ADD_ENTRY = '@NutritionTypeError/AddEntryError',
   DEL_ENTRY = '@NutritionTypeError/DelEntryError',
   MODIFY_ENTRY = '@NutritionTypeError/ModifyEntryError',
@@ -98,12 +100,19 @@ export const nutritionSlice = createSlice({
         state.entries = payload.entries;
         state.liquidEntries = payload.liquidEntries;
       })
-      .addCase(getNutritionData.rejected, (state) => {
+      .addCase(getNutritionData.rejected, (state, { payload }) => {
         state.loading = false;
-        state.error = {
-          type: ENutritionTypeError.GET_DATA,
-          explanation: "Couldn't get nutrition data"
-        };
+        if ((payload as AxiosError).response?.status === 403) {
+          state.error = {
+            type: ENutritionTypeError.GET_DATA_FORBIDDEN,
+            explanation: "Don't have rights"
+          };
+        } else {
+          state.error = {
+            type: ENutritionTypeError.GET_DATA,
+            explanation: "Couldn't get nutrition data"
+          };
+        }
       })
       // Add Nutrition Entry
       .addCase(addNutritionEntry.pending, (state) => {

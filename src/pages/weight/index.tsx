@@ -9,6 +9,7 @@ import Chart from 'components/chart';
 import Page from 'components/page';
 import './index.css';
 import { useParams } from 'react-router-dom';
+import { EWeightTypeError } from 'store/slices/weightSlice';
 
 const WeightPage = () => {
   const { userId } = useParams();
@@ -18,13 +19,16 @@ const WeightPage = () => {
     entry: null
   });
   const dispatch = useAppDispatch();
-  const { entries } = useAppSelector((state) => state.weight);
+  const { entries, error } = useAppSelector((state) => state.weight);
   const myData = useAppSelector((state) => state.user.data);
   useEffect(() => {
     dispatch(getWeights(Number(userId)));
   }, [dispatch, userId]);
   return (
-    <Page title={t('weight')}>
+    <Page
+      title={t('weight')}
+      forbidden={error?.type === EWeightTypeError.GET_WEIGHT_DATA_FORBIDDEN}
+    >
       <Row>
         <Col lg={12} className="mb-2">
           <Card>

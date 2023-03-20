@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import {
   getWeights,
   addWeight,
@@ -8,6 +9,7 @@ import {
 
 export const enum EWeightTypeError {
   GET_WEIGHT_DATA = '@WeightTypeError/GetWeightDataError',
+  GET_WEIGHT_DATA_FORBIDDEN = '@WeightTypeError/GetWeightDataForbiddenError',
   ADD_ENTRY = '@WeightTypeError/AddEntryError',
   DEL_ENTRY = '@WeightTypeError/DelEntryError',
   MODIFY_ENTRY = '@WeightTypeError/ModifyEntryError'
@@ -51,12 +53,19 @@ export const weightSlice = createSlice({
         state.loading = false;
         state.entries = payload;
       })
-      .addCase(getWeights.rejected, (state) => {
+      .addCase(getWeights.rejected, (state, { payload }) => {
         state.loading = false;
-        state.error = {
-          type: EWeightTypeError.GET_WEIGHT_DATA,
-          explanation: "Couldn't get weights"
-        };
+        if ((payload as AxiosError).response?.status === 403) {
+          state.error = {
+            type: EWeightTypeError.GET_WEIGHT_DATA_FORBIDDEN,
+            explanation: "Don't have rights"
+          };
+        } else {
+          state.error = {
+            type: EWeightTypeError.GET_WEIGHT_DATA,
+            explanation: "Couldn't get weights"
+          };
+        }
       })
       // Add Weight Entry
       .addCase(addWeight.pending, (state) => {

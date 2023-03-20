@@ -5,7 +5,7 @@ import {
   Container,
   Dropdown
 } from 'react-bootstrap';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from 'routes';
@@ -78,6 +78,7 @@ const Navbar = ({
   const [t] = useTranslation('navbar');
   const [ariaExpanded, setAriaExpanded] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   return (
     <div className='sticky-top'>
@@ -144,7 +145,12 @@ const Navbar = ({
           `}
             >
               <div className='d-flex align-items-center order-md-last'>
-                <InputSearchUser />
+                <InputSearchUser
+                  className='w-100'
+                  onChange={(userData) => {
+                    navigate(`/${userData.id}${ROUTES.STATS}`);
+                  }}
+                />
                 <ChangeLanguage
                   variant="normal"
                   className="nav-item order-md-first me-md-2"

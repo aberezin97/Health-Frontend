@@ -21,6 +21,7 @@ export interface ITableProps {
   rowEvents?: RowEventHandlerProps | undefined;
   addEntryButtonText?: string;
   onClickAddEntryButton?: React.MouseEventHandler<HTMLElement>;
+  isAddButtonDisabled?: boolean;
   isHeaderOn?: boolean;
   searchKey?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,6 +35,7 @@ const Table = ({
   addEntryButtonText,
   searchKey,
   onClickAddEntryButton,
+  isAddButtonDisabled = false,
   isHeaderOn = false,
   ...otherProps
 }: ITableProps) => {
@@ -103,6 +105,7 @@ const Table = ({
                     variant="success"
                     onClick={onClickAddEntryButton}
                     isLoading={false}
+                    disabled={isAddButtonDisabled}
                   >
                     {addEntryButtonText}
                   </Button>

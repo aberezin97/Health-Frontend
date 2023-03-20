@@ -8,8 +8,10 @@ import Table from 'components/table';
 import Chart from 'components/chart';
 import Page from 'components/page';
 import './index.css';
+import { useParams } from 'react-router-dom';
 
 const WeightPage = () => {
+  const { userId } = useParams();
   const [t] = useTranslation('weight');
   const [showModal, setShowModal] = useState<IWeightModalShow>({
     status: false,
@@ -17,9 +19,10 @@ const WeightPage = () => {
   });
   const dispatch = useAppDispatch();
   const { entries } = useAppSelector((state) => state.weight);
+  const myData = useAppSelector((state) => state.user.data);
   useEffect(() => {
-    dispatch(getWeights());
-  }, [dispatch]);
+    dispatch(getWeights(Number(userId)));
+  }, [dispatch, userId]);
   return (
     <Page title={t('weight')}>
       <Row>
@@ -87,14 +90,15 @@ const WeightPage = () => {
               }
             ]}
             rowEvents={{
-              onClick: (e, row, rowIndex) => {
+              onClick: myData?.id === Number(userId) ? (e, row, rowIndex) => {
                 setShowModal({ status: true, entry: row });
-              }
+              } : undefined
             }}
             addEntryButtonText={t('add_entry')}
             onClickAddEntryButton={() => {
               setShowModal({ status: true, entry: null });
             }}
+            isAddButtonDisabled={myData?.id !== Number(userId)}
           />
         </Col>
       </Row>

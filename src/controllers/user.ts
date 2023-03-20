@@ -249,3 +249,39 @@ export const delAccount = createAsyncThunk(
     }
   }
 );
+
+export interface IChangeUserDefaultGoalsArguments {
+  defaultGoalLiquid: number;
+  defaultGoalCalories: number;
+  defaultGoalProteins: number;
+  defaultGoalFats: number;
+  defaultGoalCarbohydrates: number;
+  defaultLimitCalories: number;
+  defaultLimitProteins: number;
+  defaultLimitFats: number;
+  defaultLimitCarbohydrates: number;
+}
+
+export const changeUserDefaultGoals = createAsyncThunk(
+  'user/changeDefaultGoals',
+  async (
+    args: IChangeUserDefaultGoalsArguments,
+    { rejectWithValue, getState }
+  ) => {
+    const { token } = (getState() as { user: { token: string } }).user;
+    try {
+      const { data } = await axios.put(
+        '/api/user/change_default_goals/',
+        args,
+        {
+          headers: {
+            Authorization: `Token ${token}`
+          }
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

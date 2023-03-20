@@ -17,6 +17,7 @@ export interface IInputProps {
   max?: number;
   step?: number;
   min?: number;
+  disabled?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
 }
@@ -35,6 +36,7 @@ const Input = ({
   isValid,
   errorMessage,
   showErrorMessage = false,
+  disabled = false,
   ...otherProps
 }: IInputProps) => {
   const [t] = useTranslation('validators'); return (
@@ -51,6 +53,7 @@ const Input = ({
         step={step}
         max={max}
         min={min}
+        disabled={disabled}
       />
       {showErrorMessage && isInvalid && errorMessage ? (
         <Form.Control.Feedback type="invalid">

@@ -3,10 +3,10 @@ import axios from 'axios';
 
 export const getWeights = createAsyncThunk(
   'weight/getWeights',
-  async (args, { rejectWithValue, getState }) => {
+  async (userId: number, { rejectWithValue, getState }) => {
     const { token } = (getState() as { user: { token: string } }).user;
     try {
-      const { data } = await axios.get('/api/weight/', {
+      const { data } = await axios.get(`/api/${userId}/weight/`, {
         headers: {
           Authorization: `Token ${token}`
         }
@@ -19,16 +19,20 @@ export const getWeights = createAsyncThunk(
 );
 
 export interface IAddWeightArguments {
+  id: number;
   date: string;
   weight: number;
 }
 
 export const addWeight = createAsyncThunk(
   'weight/addWeight',
-  async (args: IAddWeightArguments, { rejectWithValue, getState }) => {
+  async ({
+    id,
+    ...args
+  }: IAddWeightArguments, { rejectWithValue, getState }) => {
     const { token } = (getState() as { user: { token: string } }).user;
     try {
-      const { data } = await axios.post('/api/weight/', args, {
+      const { data } = await axios.post(`/api/${id}/weight/`, args, {
         headers: {
           Authorization: `Token ${token}`
         }

@@ -5,10 +5,13 @@ import { IUserShort } from 'pages/root';
 import axios from 'axios';
 import { useAppSelector } from 'store';
 import UserPreview from 'components/user-preview';
-import { useNavigate } from 'react-router-dom';
 
-const InputSearchUser = () => {
-  const navigate = useNavigate();
+interface IInputSearchUserProps {
+  className?: string;
+  onChange?: (userData: IUserShort) => void;
+}
+
+const InputSearchUser = ({ className, onChange }: IInputSearchUserProps) => {
   const { token } = useAppSelector((state) => state.user);
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
@@ -32,7 +35,7 @@ const InputSearchUser = () => {
       }}
       filterBy={() => true}
       placeholder="Имя пользователя..."
-      className='w-100'
+      className={className}
       renderInput={({ inputRef, referenceElementRef, ...inputProps }) => (
 
         <div className='input-icon me-2'>
@@ -61,8 +64,8 @@ const InputSearchUser = () => {
       )}
       onChange={(selected) => {
         const [selection] = selected;
-        if (selection !== undefined) {
-          navigate(`/${selection.id}/stats`);
+        if (selection !== undefined && onChange) {
+          onChange(selection as IUserShort);
         }
       }}
     />

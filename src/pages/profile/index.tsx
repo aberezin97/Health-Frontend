@@ -5,6 +5,7 @@ import {
 } from 'react-bootstrap';
 import UserDataSubPage from './subpages/user-data';
 import DefaultGoalsSubPage from './subpages/default-goals';
+import PrivacySubPage from './subpages/privacy';
 
 enum EProfileSubPageValues {
   USER_DATA,
@@ -80,17 +81,20 @@ const ProfilePage = () => {
             </Card.Body>
           </Col>
           <Col className='d-flex flex-column'>
-            <Card.Body>
-              <h2 className='mb-4'>{currentSubPage.title}</h2>
-              { currentSubPage.value === EProfileSubPageValues.USER_DATA && (
+            {
+              currentSubPage.value === EProfileSubPageValues.USER_DATA && (
                 <UserDataSubPage />
-              )}
-              { currentSubPage.value === EProfileSubPageValues.DEFAULT_GOALS && (
-                <DefaultGoalsSubPage />
-              )}
-            </Card.Body>
-            <Card.Footer className='bg-transparent'>
-            </Card.Footer>
+              )
+            }
+            { currentSubPage.value === EProfileSubPageValues.DEFAULT_GOALS && (
+              <DefaultGoalsSubPage />
+            )
+            }
+            {
+              currentSubPage.value === EProfileSubPageValues.PRIVACY && (
+                <PrivacySubPage />
+              )
+            }
           </Col>
         </Row>
       </Card>

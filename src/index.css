@@ -63,5 +63,5 @@ input::-webkit-inner-spin-button {
 }
 
 .list-group-transparent .list-group-item.active {
-  border-left: none;
+  border: 0 !important;
 }

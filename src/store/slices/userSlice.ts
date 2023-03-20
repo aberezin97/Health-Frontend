@@ -48,6 +48,15 @@ export type UserData = {
   firstName: string;
   lastName: string;
   image: string | null;
+  defaultGoalLiquid: number;
+  defaultGoalCalories: number;
+  defaultGoalProteins: number;
+  defaultGoalFats: number;
+  defaultGoalCarbohydrates: number;
+  defaultLimitCalories: number;
+  defaultLimitProteins: number;
+  defaultLimitFats: number;
+  defaultLimitCarbohydrates: number;
 };
 
 export interface IUserProduct {

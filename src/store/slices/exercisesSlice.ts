@@ -1,10 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import {
   addExerciseEntry,
   delExerciseEntry,
   getExercisesData,
   modifyExerciseEntry
 } from 'controllers/exercises';
+
+export enum EExercisesTypeError {
+  GET_EXERCISES_DATA = '@ExercisesTypeError/GetExercisesDataError',
+  // eslint-disable-next-line max-len
+  GET_EXERCISES_DATA_FORBIDDEN = '@ExercisesTypeError/GetExercisesDataForbiddenError',
+}
 
 export interface IExerciseEntry {
   id: number;
@@ -13,13 +20,28 @@ export interface IExerciseEntry {
   counts: number;
 }
 
+export type ExercisesError = {
+  type: EExercisesTypeError;
+  explanation: string;
+};
+
+export enum EExerciseLoadingType {
+  GET_EXERCISES_DATA,
+  ADD_EXERCISE_ENTRY,
+}
+
 interface IExercisesState {
-  loading: boolean;
+  loading: Record<EExerciseLoadingType, boolean>;
+  error: ExercisesError | null;
   entries: IExerciseEntry[]
 }
 
 const initialState: IExercisesState = {
-  loading: false,
+  loading: {
+    [EExerciseLoadingType.GET_EXERCISES_DATA]: false,
+    [EExerciseLoadingType.ADD_EXERCISE_ENTRY]: false
+  },
+  error: null,
   entries: []
 };
 
@@ -29,33 +51,39 @@ export const exercisesSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Get Exercises Data
       .addCase(getExercisesData.pending, (state) => {
-        state.loading = true;
-        // state.error = null;
+        state.loading = {
+          ...state.loading,
+          [EExerciseLoadingType.GET_EXERCISES_DATA]: true
+        };
+        state.error = null;
       })
       .addCase(getExercisesData.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [EExerciseLoadingType.GET_EXERCISES_DATA]: false
+        };
         state.entries = payload;
-        // state.loading = false;
-        // state.limitCalories = payload.limitCalories;
-        // state.limitProteins = payload.limitProteins;
-        // state.limitFats = payload.limitFats;
-        // state.limitCarbohydrates = payload.limitCarbohydrates;
-        // state.goalCalories = payload.goalCalories;
-        // state.goalProteins = payload.goalProteins;
-        // state.goalFats = payload.goalFats;
-        // state.goalCarbohydrates = payload.goalCarbohydrates;
-        // state.goalLiquid = payload.goalLiquid;
-        // state.entries = payload.entries;
-        // state.liquidEntries = payload.liquidEntries;
       })
-      .addCase(getExercisesData.rejected, (state) => {
-        state.loading = false;
-        // state.error = {
-        //   type: ENutritionTypeError.GET_DATA,
-        //   explanation: "Couldn't get nutrition data"
-        // };
+      .addCase(getExercisesData.rejected, (state, { payload }) => {
+        state.loading = {
+          ...state.loading,
+          [EExerciseLoadingType.GET_EXERCISES_DATA]: false
+        };
+        if ((payload as AxiosError).response?.status === 403) {
+          state.error = {
+            type: EExercisesTypeError.GET_EXERCISES_DATA_FORBIDDEN,
+            explanation: "Don't have rights"
+          };
+        } else {
+          state.error = {
+            type: EExercisesTypeError.GET_EXERCISES_DATA,
+            explanation: "Couldn't get nutrition data"
+          };
+        }
       })
+      // Add Exercise Entry
       .addCase(addExerciseEntry.pending, (state) => {
         state.loading = true;
       })
@@ -66,6 +94,7 @@ export const exercisesSlice = createSlice({
       .addCase(addExerciseEntry.rejected, (state) => {
         state.loading = false;
       })
+      // Modify Exercise Entry
       .addCase(modifyExerciseEntry.pending, (state) => {
         state.loading = true;
       })
@@ -77,6 +106,7 @@ export const exercisesSlice = createSlice({
       .addCase(modifyExerciseEntry.rejected, (state) => {
         state.loading = false;
       })
+      // Del Exercise Entry
       .addCase(delExerciseEntry.pending, (state) => {
         state.loading = true;
       })

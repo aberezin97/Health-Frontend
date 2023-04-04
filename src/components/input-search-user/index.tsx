@@ -5,6 +5,8 @@ import { IUserShort } from 'pages/root';
 import axios from 'axios';
 import { useAppSelector } from 'store';
 import UserPreview from 'components/user-preview';
+import cn from 'classnames';
+import { useTranslation } from 'react-i18next';
 
 interface IInputSearchUserProps {
   className?: string;
@@ -12,6 +14,7 @@ interface IInputSearchUserProps {
 }
 
 const InputSearchUser = ({ className, onChange }: IInputSearchUserProps) => {
+  const [t] = useTranslation();
   const { token } = useAppSelector((state) => state.user);
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
@@ -34,11 +37,11 @@ const InputSearchUser = ({ className, onChange }: IInputSearchUserProps) => {
         });
       }}
       filterBy={() => true}
-      placeholder="Имя пользователя..."
+      placeholder={t('user:search_user')}
       className={className}
       renderInput={({ inputRef, referenceElementRef, ...inputProps }) => (
 
-        <div className='input-icon me-2'>
+        <div className={cn('input-icon', className)}>
           <Hint>
             <span className='input-icon-addon'>
               <i className="fas fa-search" />

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { EPermissionType } from 'store/slices/userSlice';
 
 export interface ISignInArguments {
   username: string;
@@ -271,7 +272,128 @@ export const changeUserDefaultGoals = createAsyncThunk(
     const { token } = (getState() as { user: { token: string } }).user;
     try {
       const { data } = await axios.put(
-        '/api/user/change_default_goals/',
+        '/api/user/default_goals/',
+        args,
+        {
+          headers: {
+            Authorization: `Token ${token}`
+          }
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getUserDefaultGoals = createAsyncThunk(
+  'user/getUserDefaultGoals',
+  async (args, { rejectWithValue, getState }) => {
+    const { token } = (getState() as { user: { token: string } }).user;
+    try {
+      const { data } = await axios.get(
+        '/api/user/default_goals/',
+        {
+          headers: {
+            Authorization: `Token ${token}`
+          }
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getUserPermissions = createAsyncThunk(
+  'user/getPermissions',
+  async (args, { rejectWithValue, getState }) => {
+    const { token } = (getState() as { user: { token: string } }).user;
+    try {
+      const { data } = await axios.get(
+        '/api/user/permissions/',
+        {
+          headers: {
+            Authorization: `Token ${token}`
+          }
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const delUserPermission = createAsyncThunk(
+  'user/delPermission',
+  async (id: number, { rejectWithValue, getState }) => {
+    const { token } = (getState() as { user: { token: string } }).user;
+    try {
+      await axios.delete(
+        `/api/user/permissions/${id}`,
+        {
+          headers: {
+            Authorization: `Token ${token}`
+          }
+        }
+      );
+      return id;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export interface ICreateUserPermissionArgs {
+  receiver: number;
+  stats: EPermissionType;
+  exercises: EPermissionType;
+  nutrition: EPermissionType;
+  weight: EPermissionType;
+}
+
+export const createUserPermission = createAsyncThunk(
+  'user/createPermission',
+  async (args: ICreateUserPermissionArgs, { rejectWithValue, getState }) => {
+    const { token } = (getState() as { user: { token: string } }).user;
+    try {
+      const { data } = await axios.post(
+        '/api/user/create_permission/',
+        args,
+        {
+          headers: {
+            Authorization: `Token ${token}`
+          }
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+interface IModifyUserPermissionArgs {
+  id: number;
+  exercises: EPermissionType;
+  weight: EPermissionType;
+  stats: EPermissionType;
+  nutrition: EPermissionType;
+}
+
+export const modifyUserPermission = createAsyncThunk(
+  'user/modifyPermission',
+  async ({
+    id,
+    ...args
+  }: IModifyUserPermissionArgs, { rejectWithValue, getState }) => {
+    const { token } = (getState() as { user: { token: string } }).user;
+    try {
+      const { data } = await axios.put(
+        `/api/user/permissions/${id}/`,
         args,
         {
           headers: {

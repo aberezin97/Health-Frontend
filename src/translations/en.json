@@ -1,4 +1,9 @@
 {
+  "general": {
+    "add_entry": "Add Entry",
+    "modify_entry": "Modify Entry",
+    "del_entry": "Del Entry"
+  },
   "user": {
     "username": "Username",
     "email": "Email",
@@ -30,7 +35,11 @@
     "we_sent_password_reset_link": "We've sent link for password reset to email address: <u>{{email}}</u>",
     "del_account_info": "For confirming deleting account, enter your current password",
     "password_was_reset": "Password Has Been Reset",
-    "we_reset_your_password": "Password has been succsefully rest, you can use your new password for sign in"
+    "we_reset_your_password": "Password has been succsefully rest, you can use your new password for sign in",
+    "to_my_page": "To my Page",
+    "user_data": "User Data",
+    "share_profile": "Share Profile",
+    "search_user": "Search User..."
   },
   "nutrition": {
     "nutrition": "Nutrition",
@@ -53,7 +62,11 @@
     "today": "Today",
     "my_products": "My Products",
     "recent": "Recent",
-    "type_to_search": "Type to search..."
+    "type_to_search": "Type to search...",
+    "add_liquid": "Add Liquid",
+    "default_goals": "Default Goals",
+    "change_default_goals": "Change Default Goals",
+    "add_to_my_products": "Add to my Products"
   },
   "weight": {
     "weight": "Weight",
@@ -85,5 +98,21 @@
   },
   "validators": {
     "required_field": "Required field"
+  },
+  "errors": {
+    "forbidden": "Forbidden",
+    "forbidden_explanation": "You don't have rights to access this page"
+  },
+  "settings": {
+    "profile_settings": "Profile Settings",
+    "security_settings": "Security Settings"
+  },
+  "privacy": {
+    "privacy": "Privacy",
+    "your_profile_publicly_available": "Your profile is publicy available",
+    "your_profile_not_publicly_available": "Your profile isn't publicly available",
+    "allowed_to_see": "Allowed to See",
+    "allowed_to_see_and_modify": "Allowed to See and Modify",
+    "restricted": "Restricted"
   }
 }

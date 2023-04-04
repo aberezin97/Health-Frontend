@@ -2,22 +2,28 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { YearMonthDay } from './nutrition';
 
-export type GetExercisesDataArgs = YearMonthDay | undefined;
+export interface IGetExercisesDataArgs {
+  userId: number;
+  date: YearMonthDay | undefined;
+}
 
 export const getExercisesData = createAsyncThunk(
   'nutrition/getExercisesData',
-  async (args: GetExercisesDataArgs, { rejectWithValue, getState }) => {
+  async ({
+    userId,
+    date
+  }: IGetExercisesDataArgs, { rejectWithValue, getState }) => {
     const { token } = (getState() as { user: { token: string } }).user;
     try {
       const { data } =
-        typeof args === 'undefined'
-          ? await axios.get('/api/exercises/', {
+        typeof date === 'undefined'
+          ? await axios.get(`/api/${userId}/exercises/`, {
             headers: {
               Authorization: `Token ${token}`
             }
           })
           : await axios.get(
-            `/api/exercises/${args.year}/${args.month}/${args.day}/`,
+            `/api/${userId}/exercises/${date.year}/${date.month}/${date.day}/`,
             {
               headers: {
                 Authorization: `Token ${token}`

@@ -11,3 +11,11 @@ export const enum ROUTES {
   EXERCISES = '/exercises',
   PROFILE= '/profile'
 }
+
+export const enum SETTINGS_ROUTES {
+  USER_DATA = 'user_data',
+  DEFAULT_GOALS = 'default_goals',
+  PRIVACY = 'privacy',
+  CHANGE_PASSWORD = 'change_password',
+  DELETE_ACCOUNT = 'delete_account'
+}

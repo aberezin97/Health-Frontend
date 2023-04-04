@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Row, Col, Button
 } from 'react-bootstrap';
@@ -11,7 +11,7 @@ import NutritionModal, {
 } from 'components/nutrition-modal';
 import GoalsModal, { IGoalsModalShow } from 'components/goals-modal';
 import DateModal from 'components/date-modal';
-import Page from 'components/page';
+import Page, { EPageStatus } from 'components/page';
 import ProgressWidget from 'components/progress-widget';
 import RatioWidget from 'components/ratio-widget';
 import Table from 'components/table';
@@ -20,7 +20,10 @@ import { numberSortFunc } from 'utils/sorters';
 import LiquidModal from 'components/liquid-modal';
 import LiquidProgress from 'components/liquid-progress';
 import { useParams } from 'react-router-dom';
-import { ENutritionTypeError } from 'store/slices/nutritionSlice';
+import {
+  ENutritionLoadingType,
+  ENutritionTypeError
+} from 'store/slices/nutritionSlice';
 
 const NutritionPage = () => {
   const [t] = useTranslation(['nutrition']);
@@ -35,6 +38,7 @@ const NutritionPage = () => {
   );
   const dispatch = useAppDispatch();
   const {
+    loading,
     error,
     entries,
     liquidEntries,
@@ -54,6 +58,22 @@ const NutritionPage = () => {
       date
     }));
   }, [dispatch, date, userId]);
+
+  const pageStatus = useMemo(() => {
+    if (loading[ENutritionLoadingType.GET_NUTRITION_DATA]) {
+      return EPageStatus.LOADING;
+    }
+    if (error) {
+      switch (error.type) {
+      case ENutritionTypeError.GET_DATA_FORBIDDEN:
+        return EPageStatus.FORBIDDEN;
+      default:
+        break;
+      }
+    }
+    return EPageStatus.OK;
+  }, [error, loading]);
+
   return (
     <Page
       pretitle={
@@ -94,7 +114,7 @@ const NutritionPage = () => {
           </Button>
         </div>
       }
-      forbidden={error?.type === ENutritionTypeError.GET_DATA_FORBIDDEN}
+      status={pageStatus}
     >
       <Row className='mb-2'>
         <Col>

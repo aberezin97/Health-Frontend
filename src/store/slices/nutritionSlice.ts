@@ -26,6 +26,16 @@ export type NutritionError = {
   explanation: string;
 };
 
+export enum ENutritionLoadingType {
+  GET_NUTRITION_DATA,
+  ADD_NUTRITION_ENTRY,
+  DEL_NUTRITION_ENTRY,
+  MODIFY_NUTRITION_ENTRY,
+  MODIFY_NUTRITION_GOALS,
+  ADD_LIQUID_ENTRY,
+  DEL_LIQUID_ENTRY,
+}
+
 export interface INutritionEntry {
   id: number;
   time: string;
@@ -44,7 +54,7 @@ export interface ILiquidEntry {
 }
 
 export interface INutritionState {
-  loading: boolean;
+  loading: Record<ENutritionLoadingType, boolean>;
   error: null | NutritionError;
   entries: INutritionEntry[];
   liquidEntries: ILiquidEntry[];
@@ -60,7 +70,15 @@ export interface INutritionState {
 }
 
 const initialState: INutritionState = {
-  loading: false,
+  loading: {
+    [ENutritionLoadingType.GET_NUTRITION_DATA]: false,
+    [ENutritionLoadingType.ADD_NUTRITION_ENTRY]: false,
+    [ENutritionLoadingType.DEL_NUTRITION_ENTRY]: false,
+    [ENutritionLoadingType.MODIFY_NUTRITION_ENTRY]: false,
+    [ENutritionLoadingType.MODIFY_NUTRITION_GOALS]: false,
+    [ENutritionLoadingType.ADD_LIQUID_ENTRY]: false,
+    [ENutritionLoadingType.DEL_LIQUID_ENTRY]: false
+  },
   error: null,
   entries: [],
   liquidEntries: [],
@@ -83,11 +101,17 @@ export const nutritionSlice = createSlice({
     builder
       // Get Nutrition Data
       .addCase(getNutritionData.pending, (state) => {
-        state.loading = true;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.GET_NUTRITION_DATA]: true
+        };
         state.error = null;
       })
       .addCase(getNutritionData.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.GET_NUTRITION_DATA]: false
+        };
         state.limitCalories = payload.limitCalories;
         state.limitProteins = payload.limitProteins;
         state.limitFats = payload.limitFats;
@@ -101,7 +125,10 @@ export const nutritionSlice = createSlice({
         state.liquidEntries = payload.liquidEntries;
       })
       .addCase(getNutritionData.rejected, (state, { payload }) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.GET_NUTRITION_DATA]: false
+        };
         if ((payload as AxiosError).response?.status === 403) {
           state.error = {
             type: ENutritionTypeError.GET_DATA_FORBIDDEN,
@@ -116,18 +143,27 @@ export const nutritionSlice = createSlice({
       })
       // Add Nutrition Entry
       .addCase(addNutritionEntry.pending, (state) => {
-        state.loading = true;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.ADD_NUTRITION_ENTRY]: true
+        };
         state.error = null;
       })
       .addCase(
         addNutritionEntry.fulfilled,
         (state, { payload }: { payload: INutritionEntry }) => {
-          state.loading = false;
+          state.loading = {
+            ...state.loading,
+            [ENutritionLoadingType.ADD_NUTRITION_ENTRY]: false
+          };
           state.entries = [...state.entries, payload];
         }
       )
       .addCase(addNutritionEntry.rejected, (state) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.ADD_NUTRITION_ENTRY]: false
+        };
         state.error = {
           type: ENutritionTypeError.ADD_ENTRY,
           explanation: "Couldn't add product"
@@ -135,15 +171,24 @@ export const nutritionSlice = createSlice({
       })
       // Del Nutrtition Entry
       .addCase(delNutritionEntry.pending, (state) => {
-        state.loading = true;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.DEL_NUTRITION_ENTRY]: true
+        };
         state.error = null;
       })
       .addCase(delNutritionEntry.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.DEL_NUTRITION_ENTRY]: false
+        };
         state.entries = state.entries.filter((entry) => entry.id !== payload);
       })
       .addCase(delNutritionEntry.rejected, (state) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.DEL_NUTRITION_ENTRY]: false
+        };
         state.error = {
           type: ENutritionTypeError.DEL_ENTRY,
           explanation: "Couldn't del product"
@@ -151,16 +196,25 @@ export const nutritionSlice = createSlice({
       })
       // Modify Nutrition Entry
       .addCase(modifyNutritionEntry.pending, (state) => {
-        state.loading = true;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.MODIFY_NUTRITION_ENTRY]: true
+        };
         state.error = null;
       })
       .addCase(modifyNutritionEntry.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.MODIFY_NUTRITION_ENTRY]: false
+        };
         state.entries = state.entries.map((entry) =>
           (entry.id !== payload.id ? entry : payload));
       })
       .addCase(modifyNutritionEntry.rejected, (state) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.MODIFY_NUTRITION_ENTRY]: false
+        };
         state.error = {
           type: ENutritionTypeError.MODIFY_ENTRY,
           explanation: "Couldn't modify product"
@@ -168,11 +222,17 @@ export const nutritionSlice = createSlice({
       })
       // Modify Nutrition Goals
       .addCase(modifyNutritionGoals.pending, (state) => {
-        state.loading = true;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.MODIFY_NUTRITION_GOALS]: true
+        };
         state.error = null;
       })
       .addCase(modifyNutritionGoals.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.MODIFY_NUTRITION_GOALS]: false
+        };
         state.limitCalories = payload.limitCalories;
         state.goalCalories = payload.goalCalories;
         state.limitProteins = payload.limitProteins;
@@ -184,7 +244,10 @@ export const nutritionSlice = createSlice({
         state.goalLiquid = payload.goalLiquid;
       })
       .addCase(modifyNutritionGoals.rejected, (state) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.MODIFY_NUTRITION_GOALS]: false
+        };
         state.error = {
           type: ENutritionTypeError.MODIFY_GOALS,
           explanation: "Couldn't change goals"
@@ -192,18 +255,27 @@ export const nutritionSlice = createSlice({
       })
       // Add Liquid
       .addCase(addLiquidEntry.pending, (state) => {
-        state.loading = true;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.ADD_LIQUID_ENTRY]: true
+        };
         state.error = null;
       })
       .addCase(addLiquidEntry.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.ADD_LIQUID_ENTRY]: false
+        };
         state.liquidEntries = [
           ...state.liquidEntries,
           payload
         ];
       })
       .addCase(addLiquidEntry.rejected, (state) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.ADD_LIQUID_ENTRY]: false
+        };
         state.error = {
           type: ENutritionTypeError.ADD_LIQUID_ENTRY,
           explanation: "Couldn't add liquid"
@@ -211,16 +283,25 @@ export const nutritionSlice = createSlice({
       })
       // Del Liquid
       .addCase(delLiquidEntry.pending, (state) => {
-        state.loading = true;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.DEL_LIQUID_ENTRY]: true
+        };
         state.error = null;
       })
       .addCase(delLiquidEntry.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.DEL_LIQUID_ENTRY]: false
+        };
         state.liquidEntries = state.liquidEntries
           .filter((liquid) => liquid.id !== payload);
       })
       .addCase(delLiquidEntry.rejected, (state) => {
-        state.loading = false;
+        state.loading = {
+          ...state.loading,
+          [ENutritionLoadingType.DEL_LIQUID_ENTRY]: false
+        };
         state.error = {
           type: ENutritionTypeError.DEL_LIQUID_ENTRY,
           explanation: "Couldn't del liquid"

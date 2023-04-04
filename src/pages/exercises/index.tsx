@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
-import Page from 'components/page';
+import Page, { EPageStatus } from 'components/page';
 import './index.css';
 import { useTranslation } from 'react-i18next';
 import { Button, Col, Row } from 'react-bootstrap';
@@ -9,10 +9,20 @@ import Table from 'components/table';
 import { useAppDispatch, useAppSelector } from 'store';
 import { getExercisesData } from 'controllers/exercises';
 import ExerciseModal, { IExrciseModalState } from 'components/exercise-modal';
+import {
+  EExerciseLoadingType,
+  EExercisesTypeError
+} from 'store/slices/exercisesSlice';
+import { useParams } from 'react-router-dom';
 
 const ExercisesPage = () => {
-  const { entries } = useAppSelector((state) => state.exercises);
+  const {
+    entries,
+    loading,
+    error
+  } = useAppSelector((state) => state.exercises);
   const dispatch = useAppDispatch();
+  const { userId } = useParams();
   const [t] = useTranslation(['exercises']);
   const [showDateModal, setShowDateModal] = useState<boolean>(false);
   const [modalState, setModalState] = useState<IExrciseModalState>({
@@ -22,8 +32,26 @@ const ExercisesPage = () => {
   });
 
   useEffect(() => {
-    dispatch(getExercisesData(modalState.date));
-  }, [dispatch, modalState.date]);
+    dispatch(getExercisesData({
+      date: modalState.date,
+      userId: Number(userId)
+    }));
+  }, [dispatch, modalState.date, userId]);
+
+  const pageStatus = useMemo(() => {
+    if (loading[EExerciseLoadingType.GET_EXERCISES_DATA]) {
+      return EPageStatus.LOADING;
+    }
+    if (error) {
+      switch (error.type) {
+      case EExercisesTypeError.GET_EXERCISES_DATA_FORBIDDEN:
+        return EPageStatus.FORBIDDEN;
+      default:
+        break;
+      }
+    }
+    return EPageStatus.OK;
+  }, [loading, error]);
 
   return (
     <Page
@@ -37,6 +65,7 @@ const ExercisesPage = () => {
           : moment(`${modalState.date.year}-${modalState.date.month}-${modalState.date.day}`)
             .format('MMM Do YYYY')
       }
+      status={pageStatus}
       title="Упражнения"
       options={
         <div className="btn-list">

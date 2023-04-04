@@ -5,7 +5,10 @@ import {
 import { useTranslation } from 'react-i18next';
 import Button from 'components/button';
 import { useAppSelector, useAppDispatch } from 'store';
-import { ENutritionTypeError } from 'store/slices/nutritionSlice';
+import {
+  ENutritionLoadingType,
+  ENutritionTypeError
+} from 'store/slices/nutritionSlice';
 import { modifyNutritionGoals, YearMonthDay } from 'controllers/nutrition';
 import './index.css';
 import GoalsBody from 'components/goals-body';
@@ -105,7 +108,7 @@ const GoalsModal = ({ show, onHide }: IGoalsModalProps) => {
         <Button
           type="button"
           variant="success"
-          isLoading={loading}
+          isLoading={loading[ENutritionLoadingType.MODIFY_NUTRITION_GOALS]}
           onClick={() => {
             dispatch(modifyNutritionGoals({
               ...goals,

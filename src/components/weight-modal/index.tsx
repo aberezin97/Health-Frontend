@@ -8,13 +8,18 @@ import moment from 'moment';
 import { useAppSelector, useAppDispatch } from 'store';
 import Button from 'components/button';
 import Input from 'components/input';
-import { EWeightTypeError, IWeightEntry } from 'store/slices/weightSlice';
+import {
+  EWeightLoadingType,
+  EWeightTypeError,
+  IWeightEntry
+} from 'store/slices/weightSlice';
 import { addWeight, modifyWeight, delWeight } from 'controllers/weight';
 import './index.css';
 
 export interface IWeightModalShow {
   status: boolean;
   entry: IWeightEntry | null;
+  userId: number;
 }
 
 export interface IWeightModalProps {
@@ -38,13 +43,21 @@ const WeightModal = ({ show, onHide, ...otherProps }: IWeightModalProps) => {
         },
     onSubmit: (args) => {
       if (show.entry === null) {
-        dispatch(addWeight(args))
+        dispatch(addWeight({ ...args, id: show.userId }))
           .unwrap()
-          .then(() => onHide({ status: false, entry: show.entry }));
+          .then(() => onHide({
+            status: false,
+            entry: show.entry,
+            userId: show.userId
+          }));
       } else {
         dispatch(modifyWeight({ id: show.entry.id, ...args }))
           .unwrap()
-          .then(() => onHide({ status: false, entry: show.entry }));
+          .then(() => onHide({
+            status: false,
+            entry: show.entry,
+            userId: show.userId
+          }));
       }
     },
     enableReinitialize: true
@@ -54,7 +67,11 @@ const WeightModal = ({ show, onHide, ...otherProps }: IWeightModalProps) => {
       centered
       size="sm"
       show={show.status}
-      onHide={() => onHide({ status: false, entry: show.entry })}
+      onHide={() => onHide({
+        status: false,
+        entry: show.entry,
+        userId: show.userId
+      })}
       {...otherProps}
     >
       <Modal.Header closeButton>
@@ -115,7 +132,10 @@ const WeightModal = ({ show, onHide, ...otherProps }: IWeightModalProps) => {
         </Modal.Body>
         <Modal.Footer>
           {show.entry === null ? (
-            <Button variant="success" type="submit" isLoading={loading}>
+            <Button
+              variant="success"
+              type="submit"
+              isLoading={loading[EWeightLoadingType.ADD_WEIGHT_ENTRY]}>
               {t('add_entry')}
             </Button>
           ) : (
@@ -127,14 +147,22 @@ const WeightModal = ({ show, onHide, ...otherProps }: IWeightModalProps) => {
                   if (show.entry !== null) {
                     dispatch(delWeight(show.entry.id))
                       .unwrap()
-                      .then(() => onHide({ status: false, entry: show.entry }));
+                      .then(() => onHide({
+                        status: false,
+                        entry: show.entry,
+                        userId: show.userId
+                      }));
                   }
                 }}
-                isLoading={loading}
+                isLoading={loading[EWeightLoadingType.DEL_WEIGHT_ENTRY]}
               >
                 {t('del_entry')}
               </Button>
-              <Button variant="warning" type="submit" isLoading={loading}>
+              <Button
+                variant="warning"
+                type="submit"
+                isLoading={loading[EWeightLoadingType.MODIFY_WEIGHT_ENTRY]}
+              >
                 {t('modify_entry')}
               </Button>
             </>

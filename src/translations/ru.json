@@ -1,4 +1,9 @@
 {
+  "general": {
+    "add_entry":"Добавить запись",
+    "modify_entry": "Изменить запись",
+    "del_entry": "Удалить запись"
+  },
   "user": {
     "username": "Имя пользователя",
     "password": "Пароль",
@@ -30,7 +35,11 @@
     "we_sent_password_reset_link": "Мы отправили ссылку для восстановления пароля на адрес электронной почты: <u>{{email}}</u>",
     "del_account_info": "Для подтверждения удаления аккаунта введите текущий пароль",
     "password_was_reset": "Пароль восстановлен",
-    "we_reset_your_password": "Пароль был успешно восстановлен, вы можете использовать новый пароль для входа"
+    "we_reset_your_password": "Пароль был успешно восстановлен, вы можете использовать новый пароль для входа",
+    "to_my_page": "На мою страницу",
+    "user_data": "Пользовательские данные",
+    "share_profile": "Поделиться профилем",
+    "search_user": "Найти пользователя..."
   },
   "weight": {
     "weight": "Вес",
@@ -62,7 +71,10 @@
     "today": "Сегодня",
     "my_products": "Мои продукты",
     "recent": "Недавние",
-    "type_to_search": "Печатайте для поиска..."
+    "type_to_search": "Печатайте для поиска...",
+    "default_goals": "Цели по-умолчанию",
+    "change_default_goals": "Изменить цели по-умолчанию",
+    "add_to_my_products": "Добавить в мои продукты"
   },
   "exercises": {
     "approaches": "Подходы",
@@ -86,5 +98,21 @@
   },
   "validators": {
     "required_field": "Обязательное поле"
+  },
+  "errors": {
+    "forbidden": "Запрещено",
+    "forbidden_explanation": "У вас нет прав для доступа к этой странице"
+  },
+  "settings": {
+    "profile_settings": "Настройки профиля",
+    "security_settings": "Настройки безопасности"
+  },
+  "privacy": {
+    "privacy": "Приватность",
+    "your_profile_publicly_available": "Твой профиль публично доступен",
+    "your_profile_not_publicly_available": "Твой профиль публично недоступен",
+    "allowed_to_see": "Разрешен просмотр",
+    "allowed_to_see_and_modify": "Разрешен просмотр и редактирование",
+    "restricted": "Закрыто"
   }
 }

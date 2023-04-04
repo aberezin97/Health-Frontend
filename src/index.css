@@ -65,3 +65,11 @@ input::-webkit-inner-spin-button {
 .list-group-transparent .list-group-item.active {
   border: 0 !important;
 }
+
+.list-group-item:hover {
+    background-color: rgba(27,125,241,.02);
+}
+
+.list-group-item {
+    background-color: inherit;
+}

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import noUiSlider, { Options } from 'nouislider';
+import React, { useEffect, useRef } from 'react';
+import noUiSlider, { API, Options } from 'nouislider';
 import './index.css';
 import cn from 'classnames';
 
@@ -24,8 +24,11 @@ const Slider = ({
   className,
   ...otherProps
 }: ISliderProps) => {
+  const slider = useRef<undefined | API>(undefined);
+
+  // Creating
   useEffect(() => {
-    const slider = noUiSlider.create(
+    slider.current = noUiSlider.create(
       document.getElementById(id) as HTMLElement,
       {
         start,
@@ -36,13 +39,26 @@ const Slider = ({
       }
     );
 
-    slider.on('change', onChange);
+    slider.current.on('change', onChange);
 
     return () => {
-      slider.destroy();
+      slider.current?.destroy();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  // Updating
+  useEffect(() => {
+    if (slider.current) {
+      slider.current.updateOptions({
+        start,
+        step,
+        tooltips,
+        range
+      }, true);
+    }
+  }, [step, range, tooltips, start]);
+
   return (
     <div
       id={id}

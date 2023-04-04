@@ -60,10 +60,6 @@ const defaultDropdownLinks = [
     title: 'my_products'
   },
   {
-    url: ROUTES.PROFILE,
-    title: 'profile'
-  },
-  {
     url: ROUTES.SETTINGS,
     title: 'settings'
   }
@@ -146,7 +142,7 @@ const Navbar = ({
             >
               <div className='d-flex align-items-center order-md-last'>
                 <InputSearchUser
-                  className='w-100'
+                  className='w-100 me-2'
                   onChange={(userData) => {
                     navigate(`/${userData.id}${ROUTES.STATS}`);
                   }}
@@ -242,7 +238,7 @@ const Navbar = ({
                   <i className="fas fa-arrow-left"></i>
                 </span>
                 <div className="ps-2 d-none d-xl-block">
-                  <div className='home-page-block'>Back to my page</div>
+                  <div className='home-page-block'>{t('user:to_my_page')}</div>
                 </div>
               </Link>
             </Nav>

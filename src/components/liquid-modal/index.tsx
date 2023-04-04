@@ -10,6 +10,7 @@ import {
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from 'store';
+import { ENutritionLoadingType } from 'store/slices/nutritionSlice';
 
 interface ILiquidModalProps extends ModalProps {
   userId: number;
@@ -66,10 +67,10 @@ const LiquidModal = ({ show, onHide, userId }: ILiquidModalProps) => {
               formatter: (cellContent, row) => (
                 <Button
                   variant="danger"
-                  isLoading={loading}
                   onClick={() => {
                     dispatch(delLiquidEntry(row.id));
                   }}
+                  isLoading={false}
                 >
                   <i className="fas fa-trash text-white" />
                 </Button>
@@ -82,7 +83,7 @@ const LiquidModal = ({ show, onHide, userId }: ILiquidModalProps) => {
         />
       </Modal.Body>
       <Modal.Footer>
-        <Form onSubmit={formik.handleSubmit}>
+        <Form className='w-100' onSubmit={formik.handleSubmit}>
           <InputGroup>
             <InputGroup.Text><i className="far fa-clock" /></InputGroup.Text>
             <FormControl
@@ -100,7 +101,7 @@ const LiquidModal = ({ show, onHide, userId }: ILiquidModalProps) => {
               onChange={formik.handleChange}
             />
             <Button
-              isLoading={loading}
+              isLoading={loading[ENutritionLoadingType.ADD_LIQUID_ENTRY]}
               variant="success"
               type="submit"
             >

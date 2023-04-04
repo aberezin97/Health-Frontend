@@ -55,19 +55,28 @@ const GoalWidget = ({
         <div className="d-flex align-items-center mt-2">
           <FormControl
             value={Array.isArray(start) ? start[0] : start}
-            onChange={(e) => onChange([e.target.value, max])}
+            onChange={(e) => onChange(Array.isArray(start)
+              ? [e.target.value, start[1]]
+              : [e.target.value, e.target.value])
+            }
             className="me-2"
             type="number"
             step={step}
+            min={min}
+            max={max}
             maxLength={4}
           />
-          <FormControl
-            value={Array.isArray(start) ? start[1] : start}
-            onChange={(e) => onChange([min, e.target.value])}
-            type="number"
-            step={step}
-            maxLength={4}
-          />
+          { Array.isArray(start) && (
+            <FormControl
+              value={start[1]}
+              onChange={(e) => onChange([start[0], e.target.value])}
+              type="number"
+              step={step}
+              min={min}
+              max={max}
+              maxLength={4}
+            />
+          )}
         </div>
       )}
     </Card.Body>

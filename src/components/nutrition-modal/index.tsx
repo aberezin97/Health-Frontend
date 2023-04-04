@@ -10,7 +10,10 @@ import { useTranslation } from 'react-i18next';
 import { Option } from 'react-bootstrap-typeahead/types/types';
 import Button from 'components/button';
 import Input from 'components/input';
-import { INutritionEntry } from 'store/slices/nutritionSlice';
+import {
+  ENutritionLoadingType,
+  INutritionEntry
+} from 'store/slices/nutritionSlice';
 import {
   addNutritionEntry,
   modifyNutritionEntry,
@@ -57,7 +60,7 @@ const NutritionModal = ({
 }: INutritionModalProps) => {
   const [t] = useTranslation('nutrition');
   const dispatch = useAppDispatch();
-  const [isAddToMyProducts, setIsAddToMyProducts] = useState<boolean>(false);
+  const [isAddToMyProducts, setIsAddToMyProducts] = useState<boolean>(true);
   const { entries, loading } = useAppSelector((state) => state.nutrition);
   const [entry, setEntry] = useState(
     show.entry !== null
@@ -400,10 +403,14 @@ const NutritionModal = ({
                     'text-muted': !isAddToMyProducts
                   })}
                 >
-                  Add to my products
+                  {t('add_to_my_products')}
                 </FormCheck.Label>
               </FormCheck>
-              <Button type="submit" variant="success" isLoading={loading}>
+              <Button
+                type="submit"
+                variant="success"
+                isLoading={loading[ENutritionLoadingType.ADD_NUTRITION_ENTRY]}
+              >
                 {t('add_entry')}
               </Button>
             </>
@@ -426,11 +433,17 @@ const NutritionModal = ({
                       });
                   }
                 }}
-                isLoading={loading}
+                isLoading={loading[ENutritionLoadingType.DEL_NUTRITION_ENTRY]}
               >
                 {t('del_entry')}
               </Button>
-              <Button type="submit" variant="warning" isLoading={loading}>
+              <Button
+                type="submit"
+                variant="warning"
+                isLoading={
+                  loading[ENutritionLoadingType.MODIFY_NUTRITION_ENTRY]
+                }
+              >
                 {t('modify_entry')}
               </Button>
             </>

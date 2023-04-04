@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Card, Row, Col
 } from 'react-bootstrap';
@@ -22,9 +22,9 @@ interface ISubpagerProps {
   categories: ISubPageCategory[];
 }
 
-const Subpager = ({ categories }: ISubpagerProps) => {
-  const [currentSubPage, setCurrentSubPage] = useState<ISubPage>();
-  return (
+const Subpager = ({ categories }: ISubpagerProps) =>
+  // const [currentSubPage, setCurrentSubPage] = useState<ISubPage>();
+  (
     <Card>
       <Row className='g-0'>
         <Col sm={3} className="d-none d-md-block border-end">
@@ -68,4 +68,4 @@ const Subpager = ({ categories }: ISubpagerProps) => {
       </Row>
     </Card>
   );
-};
+export default Subpager;

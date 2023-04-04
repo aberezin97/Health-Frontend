@@ -12,8 +12,14 @@ import {
   addUserProduct,
   modifyUserProduct,
   delUserProduct,
-  delAccount
+  delAccount,
+  getUserPermissions,
+  getUserDefaultGoals,
+  delUserPermission,
+  createUserPermission,
+  modifyUserPermission
 } from 'controllers/user';
+import { IUserShort } from 'pages/root';
 
 export const enum EUserTypeError {
   SIGN_IN = '@UserTypeError/SignInError',
@@ -68,6 +74,21 @@ export interface IUserProduct {
   carbohydrates: number;
 }
 
+export enum EPermissionType {
+  NONE = 0,
+  READ = 1,
+  READWRITE = 2
+}
+
+export interface IPermission {
+  id: number;
+  receiver: IUserShort;
+  weight: EPermissionType,
+  nutrition: EPermissionType,
+  exercises: EPermissionType,
+  stats: EPermissionType
+}
+
 export interface IUserState {
   data: null | UserData;
   loading: boolean;
@@ -75,6 +96,7 @@ export interface IUserState {
   error: null | UserError;
   token: null | string;
   products: IUserProduct[];
+  permissions: IPermission[];
 }
 
 const initialState: IUserState = {
@@ -83,7 +105,8 @@ const initialState: IUserState = {
   language: ELanguage.EN,
   error: null,
   token: null,
-  products: []
+  products: [],
+  permissions: []
 };
 
 export const userSlice = createSlice({
@@ -356,6 +379,66 @@ export const userSlice = createSlice({
           type: EUserTypeError.DEL_ACCOUNT,
           explanation: "Couldn't delete user account"
         };
+      })
+      // Get User Permissions
+      .addCase(getUserPermissions.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserPermissions.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.permissions = payload;
+      })
+      .addCase(getUserPermissions.rejected, (state) => {
+        state.loading = false;
+      })
+      // Get User Default Goals
+      .addCase(getUserDefaultGoals.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserDefaultGoals.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.data = {
+          ...state.data,
+          ...payload
+        };
+      })
+      // TODO: getUserDefaultGoals.rejected
+      // Del User Permission
+      .addCase(delUserPermission.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(delUserPermission.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.permissions = state.permissions.filter(
+          (permission) => permission.id !== payload
+        );
+      })
+      // TODO : delUserPermission.rejected
+      .addCase(createUserPermission.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createUserPermission.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.permissions = [
+          ...state.permissions,
+          payload
+        ];
+      })
+      .addCase(modifyUserPermission.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(modifyUserPermission.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.permissions = state.permissions.map(
+          (permission) => (permission.id === payload.id
+            ? { ...permission, ...payload }
+            : permission)
+        );
       });
   }
 });

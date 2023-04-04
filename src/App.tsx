@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import ProductsPage from 'pages/products';
@@ -16,11 +16,15 @@ import ActivatePage from 'pages/activate';
 import PrivateRoute from 'components/private-route';
 import PublicRoute from 'components/public-route';
 import { useAppSelector } from 'store';
-import { ROUTES } from 'routes';
+import { ROUTES, SETTINGS_ROUTES } from 'routes';
 import './App.css';
 import ExercisesPage from 'pages/exercises';
-import ProfilePage from 'pages/profile';
 import RootPage from 'pages/root';
+import UserDataSubPage from 'pages/settings/subpages/user-data';
+import PrivacySubPage from 'pages/settings/subpages/privacy';
+import DefaultGoalsSubPage from 'pages/settings/subpages/default-goals';
+import DeleteAccountSubPage from 'pages/settings/subpages/delete';
+import ChangePasswordSubPage from 'pages/settings/subpages/password';
 
 const App = () => {
   const { language } = useAppSelector((state) => state.user);
@@ -124,15 +128,34 @@ const App = () => {
               <SettingsPage />
             </PrivateRoute>
           }
-        />
-        <Route
-          path={ROUTES.PROFILE}
-          element={
-            <PrivateRoute>
-              <ProfilePage />
-            </PrivateRoute>
-          }
-        />
+        >
+          <Route
+            index
+            element={
+              <Navigate to={SETTINGS_ROUTES.USER_DATA} />
+            }
+          />
+          <Route
+            path={SETTINGS_ROUTES.USER_DATA}
+            element={<UserDataSubPage />}
+          />
+          <Route
+            path={SETTINGS_ROUTES.PRIVACY}
+            element={<PrivacySubPage />}
+          />
+          <Route
+            path={SETTINGS_ROUTES.DEFAULT_GOALS}
+            element={<DefaultGoalsSubPage />}
+          />
+          <Route
+            path={SETTINGS_ROUTES.DELETE_ACCOUNT}
+            element={<DeleteAccountSubPage />}
+          />
+          <Route
+            path={SETTINGS_ROUTES.CHANGE_PASSWORD}
+            element={<ChangePasswordSubPage />}
+          />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
